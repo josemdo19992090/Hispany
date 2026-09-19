@@ -19,6 +19,12 @@ export interface Nivel {
   nombre: string;
   orden: number;
   descripcion: string | null;
+  // Metadata de navegación (nombre/descripción del nivel en la pantalla de
+  // selección), no contenido pedagógico — por eso sí se traduce con el
+  // selector de idioma. Puede faltar si el nivel aún no tiene traducción;
+  // en ese caso se muestra el español como respaldo.
+  nombre_ru: string | null;
+  descripcion_ru: string | null;
 }
 
 export interface Seccion {

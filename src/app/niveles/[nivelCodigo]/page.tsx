@@ -13,6 +13,7 @@ import { NOMBRE_RANGO, type RangoMaestria } from "@/types/content";
 import Texto from "@/components/ui/Texto";
 import { ui } from "@/lib/i18n/diccionario";
 import { obtenerIdioma } from "@/lib/i18n/server";
+import { nombreNivel, descripcionNivel } from "@/lib/i18n/contenido";
 
 export default async function NivelPage({
   params,
@@ -45,8 +46,8 @@ export default async function NivelPage({
         <Texto clave="todosLosNiveles" />
       </Link>
 
-      <h1 className="mb-1 mt-2 text-2xl font-extrabold">{nivel.nombre}</h1>
-      <p className="mb-4 text-chigui-brown">{nivel.descripcion}</p>
+      <h1 className="mb-1 mt-2 text-2xl font-extrabold">{nombreNivel(nivel, idioma)}</h1>
+      <p className="mb-4 text-chigui-brown">{descripcionNivel(nivel, idioma)}</p>
 
       {user && (
         <div className="mb-6 rounded-card bg-white p-4 shadow-soft">

@@ -14,6 +14,7 @@ import ContenidoBloqueado from "@/components/ContenidoBloqueado";
 import ChiguiMascot from "@/components/ChiguiMascot";
 import Texto from "@/components/ui/Texto";
 import { obtenerIdioma } from "@/lib/i18n/server";
+import { nombreNivel } from "@/lib/i18n/contenido";
 
 export default async function SeccionPage({
   params,
@@ -50,7 +51,7 @@ export default async function SeccionPage({
         className="inline-flex items-center gap-1 text-sm font-semibold text-brand-blue"
       >
         <ArrowLeft className="h-4 w-4" aria-hidden="true" />
-        {nivel.nombre}
+        {nombreNivel(nivel, idioma)}
       </Link>
       <h1 className="mb-6 mt-2 text-2xl font-extrabold">{seccion.titulo}</h1>
 

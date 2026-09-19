@@ -11,6 +11,7 @@ import SelectorPerfil from "@/components/SelectorPerfil";
 import Texto from "@/components/ui/Texto";
 import { ui } from "@/lib/i18n/diccionario";
 import { obtenerIdioma } from "@/lib/i18n/server";
+import { nombreNivel } from "@/lib/i18n/contenido";
 
 export default async function PruebaFinalNivelPage({
   params,
@@ -34,7 +35,7 @@ export default async function PruebaFinalNivelPage({
         className="inline-flex items-center gap-1 text-sm font-semibold text-brand-blue"
       >
         <ArrowLeft className="h-4 w-4" aria-hidden="true" />
-        {nivel.nombre}
+        {nombreNivel(nivel, idioma)}
       </Link>
       <h1 className="mb-1 mt-2 text-2xl font-extrabold">{ui.pruebaFinalTitulo[idioma]}</h1>
     </>
@@ -47,7 +48,7 @@ export default async function PruebaFinalNivelPage({
       <div>
         {encabezado}
         <p className="mb-6 text-chigui-brown">
-          {ui.mezclaTodasLasSecciones[idioma]} ({nivel.nombre}).
+          {ui.mezclaTodasLasSecciones[idioma]} ({nombreNivel(nivel, idioma)}).
         </p>
         <ContenidoBloqueado mensajeClave="mensajePruebaFinalPremium" idioma={idioma} />
       </div>
@@ -63,7 +64,7 @@ export default async function PruebaFinalNivelPage({
     <div>
       {encabezado}
       <p className="mb-6 text-chigui-brown">
-        {ui.mezclaTodasLasSecciones[idioma]} ({nivel.nombre}). {ui.necesitas60Aprobar[idioma]}.
+        {ui.mezclaTodasLasSecciones[idioma]} ({nombreNivel(nivel, idioma)}). {ui.necesitas60Aprobar[idioma]}.
       </p>
 
       <SelectorPerfil perfilActivo={perfilActivo} idioma={idioma} />

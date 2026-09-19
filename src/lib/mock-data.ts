@@ -11,6 +11,8 @@ export const niveles: Nivel[] = [
     nombre: "A1 - Principiante",
     orden: 1,
     descripcion: "Los primeros pasos: alfabeto, saludos y frases básicas.",
+    nombre_ru: "A1 - Начальный уровень",
+    descripcion_ru: "Первые шаги: алфавит, приветствия и базовые фразы.",
   },
   {
     id: "nivel-a2",
@@ -18,6 +20,8 @@ export const niveles: Nivel[] = [
     nombre: "A2 - Elemental",
     orden: 2,
     descripcion: "Conversaciones cotidianas y gramática esencial.",
+    nombre_ru: "A2 - Элементарный уровень",
+    descripcion_ru: "Повседневное общение и основы грамматики.",
   },
 ];
 
