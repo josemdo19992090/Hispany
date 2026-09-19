@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { ArrowLeft, Check, ClipboardCheck, Lock, Star } from "lucide-react";
 import {
   getNivelPorCodigo,
   getSeccionesPorNivel,
@@ -28,46 +29,97 @@ export default async function NivelPage({
   const usuario = supabase ? await getUsuarioActual(supabase) : null;
   const { esPremium } = calcularEstadoPremium(usuario);
 
+  const completadas = secciones.filter((s) => progreso[s.id]?.pasado).length;
+
   return (
     <div>
-      <Link href="/" className="text-sm font-semibold text-brand-blue">
-        &larr; Todos los niveles
+      <Link
+        href="/"
+        className="inline-flex items-center gap-1 text-sm font-semibold text-brand-blue"
+      >
+        <ArrowLeft className="h-4 w-4" aria-hidden="true" />
+        Todos los niveles
       </Link>
-      <h1 className="mb-1 mt-2 text-2xl font-extrabold">{nivel.nombre}</h1>
-      <p className="mb-6 text-chigui-brown">{nivel.descripcion}</p>
 
-      <ol className="flex flex-col gap-3">
+      <h1 className="mb-1 mt-2 text-2xl font-extrabold">{nivel.nombre}</h1>
+      <p className="mb-4 text-chigui-brown">{nivel.descripcion}</p>
+
+      {user && (
+        <div className="mb-6 rounded-card bg-white p-4 shadow-soft">
+          <div className="mb-2 flex items-baseline justify-between">
+            <span className="text-sm font-bold">Tu progreso en {nivel.codigo}</span>
+            <span className="text-sm text-chigui-brown">
+              {completadas} de {secciones.length}
+            </span>
+          </div>
+          <div className="h-2.5 w-full overflow-hidden rounded-full bg-chigui-cream">
+            <div
+              className="h-full rounded-full bg-brand-green transition-all"
+              style={{ width: `${(completadas / Math.max(secciones.length, 1)) * 100}%` }}
+            />
+          </div>
+        </div>
+      )}
+
+      {/* Camino vertical: los nodos y la línea que los une hacen que se lea como
+          una ruta de aprendizaje y no como una lista de tarjetas sueltas. */}
+      <ol className="relative flex flex-col gap-3 pl-7">
+        <span
+          className="absolute bottom-6 left-[15px] top-6 w-0.5 bg-chigui-tan/50"
+          aria-hidden="true"
+        />
+
         {secciones.map((seccion) => {
           const bloqueada = !seccion.es_gratis && !esPremium;
           const prog = progreso[seccion.id];
+          const pasada = prog?.pasado;
+
           return (
-            <li key={seccion.id}>
-              <Link
-                href={`/niveles/${nivel.codigo}/${seccion.orden}`}
-                className={`flex items-center gap-4 rounded-xl2 border-2 bg-white p-4 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md ${
-                  seccion.es_intro ? "border-brand-yellow" : "border-chigui-tan"
+            <li key={seccion.id} className="relative">
+              <span
+                className={`absolute -left-7 top-4 z-[1] flex h-8 w-8 items-center justify-center rounded-full text-sm font-bold ring-4 ring-chigui-cream ${
+                  pasada
+                    ? "bg-brand-green text-white"
+                    : bloqueada
+                      ? "bg-chigui-tan/60 text-white"
+                      : seccion.es_intro
+                        ? "bg-brand-yellow text-chigui-brown-dark"
+                        : "bg-white text-chigui-brown-dark shadow-soft"
                 }`}
               >
-                <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-chigui-tan font-bold text-white">
-                  {seccion.es_intro ? "★" : seccion.orden}
-                </span>
-                <div className="flex-1">
-                  <p className="font-bold">
-                    {seccion.titulo} {prog?.pasado && "✅"}
-                  </p>
+                {pasada ? (
+                  <Check className="h-4 w-4" aria-hidden="true" />
+                ) : bloqueada ? (
+                  <Lock className="h-3.5 w-3.5" aria-hidden="true" />
+                ) : seccion.es_intro ? (
+                  <Star className="h-4 w-4" aria-hidden="true" />
+                ) : (
+                  seccion.orden
+                )}
+              </span>
+
+              <Link
+                href={`/niveles/${nivel.codigo}/${seccion.orden}`}
+                className={`flex items-center gap-3 rounded-card p-4 transition ${
+                  bloqueada
+                    ? "bg-white/60 ring-1 ring-chigui-tan/40"
+                    : "bg-white shadow-soft hover:-translate-y-0.5 hover:shadow-soft-lg"
+                }`}
+              >
+                <div className="min-w-0 flex-1">
+                  <p className="font-bold">{seccion.titulo}</p>
                   <p className="text-xs text-chigui-brown">
                     {seccion.es_intro ? "Introducción del nivel" : "Sección"}
                   </p>
                 </div>
+
                 {prog && prog.rango > 0 && (
-                  <span className="rounded-full bg-brand-blue px-2 py-0.5 text-xs font-bold text-white">
+                  <span className="shrink-0 rounded-full bg-brand-blue px-2.5 py-1 text-xs font-bold text-white">
                     {NOMBRE_RANGO[prog.rango as RangoMaestria]}
                   </span>
                 )}
                 {bloqueada && (
-                  <span className="rounded-full bg-chigui-brown-dark px-3 py-1 text-xs font-bold text-white">
-                    🔒 Premium
-                  </span>
+                  <span className="shrink-0 text-xs font-bold text-chigui-brown">Premium</span>
                 )}
               </Link>
             </li>
@@ -77,9 +129,10 @@ export default async function NivelPage({
 
       <Link
         href={`/niveles/${nivel.codigo}/prueba-final`}
-        className="mt-6 block rounded-xl2 border-2 border-dashed border-chigui-tan p-4 text-center text-sm font-bold text-chigui-brown hover:border-brand-green hover:text-brand-green"
+        className="mt-6 flex items-center justify-center gap-2 rounded-card bg-white p-4 text-center text-sm font-bold text-chigui-brown shadow-soft transition hover:-translate-y-0.5 hover:text-brand-green hover:shadow-soft-lg"
       >
-        📝 Prueba final de {nivel.codigo} (mezcla todas las secciones)
+        <ClipboardCheck className="h-4 w-4" aria-hidden="true" />
+        Prueba final de {nivel.codigo}
       </Link>
     </div>
   );

@@ -1,7 +1,9 @@
 "use client";
 
 import { useState } from "react";
+import { Check, X } from "lucide-react";
 import type { EjercicioContenido } from "@/types/content";
+import Boton from "@/components/ui/Boton";
 
 export default function VerdaderoFalso({
   contenido,
@@ -16,32 +18,37 @@ export default function VerdaderoFalso({
 
   return (
     <div>
-      <p className="mb-4 text-lg font-semibold">{contenido.afirmacion}</p>
+      <p className="mb-4 text-lg font-bold">{contenido.afirmacion}</p>
       <div className="flex gap-3">
         {[true, false].map((valor) => (
           <button
             key={String(valor)}
             type="button"
             disabled={deshabilitado}
+            aria-pressed={elegido === valor}
             onClick={() => setElegido(valor)}
-            className={`flex-1 rounded-xl2 border-2 p-3 font-bold transition ${
+            className={`flex flex-1 items-center justify-center gap-2 rounded-field p-4 font-bold transition active:scale-[.99] disabled:cursor-not-allowed ${
               elegido === valor
-                ? "border-brand-green bg-brand-green/10"
-                : "border-chigui-tan bg-white hover:border-brand-green"
-            } disabled:cursor-not-allowed`}
+                ? "bg-brand-green text-white"
+                : "bg-chigui-cream text-chigui-brown-dark hover:bg-chigui-tan/30"
+            }`}
           >
+            {valor ? (
+              <Check className="h-5 w-5" aria-hidden="true" />
+            ) : (
+              <X className="h-5 w-5" aria-hidden="true" />
+            )}
             {valor ? "Verdadero" : "Falso"}
           </button>
         ))}
       </div>
-      <button
-        type="button"
+      <Boton
+        className="mt-4"
         disabled={elegido === null || deshabilitado}
         onClick={() => elegido !== null && onResponder(elegido)}
-        className="mt-4 rounded-full bg-brand-green px-6 py-2 font-bold text-white disabled:opacity-40"
       >
         Comprobar
-      </button>
+      </Boton>
     </div>
   );
 }

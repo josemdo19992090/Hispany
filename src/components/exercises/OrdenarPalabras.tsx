@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import type { EjercicioContenido } from "@/types/content";
+import Boton from "@/components/ui/Boton";
 
 export default function OrdenarPalabras({
   contenido,
@@ -24,9 +25,9 @@ export default function OrdenarPalabras({
 
   return (
     <div>
-      <p className="mb-4 text-lg font-semibold">Ordena las palabras para formar la frase.</p>
+      <p className="mb-4 text-lg font-bold">Ordena las palabras para formar la frase.</p>
 
-      <div className="mb-4 flex min-h-[3rem] flex-wrap gap-2 rounded-xl2 border-2 border-dashed border-chigui-tan p-3">
+      <div className="mb-4 flex min-h-[4rem] flex-wrap content-start gap-2 rounded-field bg-chigui-cream p-3">
         {orden.length === 0 && (
           <span className="text-sm text-chigui-brown">Toca las palabras en orden...</span>
         )}
@@ -36,7 +37,7 @@ export default function OrdenarPalabras({
             type="button"
             disabled={deshabilitado}
             onClick={() => quitar(posicion)}
-            className="rounded-lg bg-brand-green px-3 py-1.5 font-semibold text-white"
+            className="rounded-full bg-brand-green px-4 py-2 font-bold text-white transition active:scale-95 disabled:cursor-not-allowed"
           >
             {contenido.palabras[i]}
           </button>
@@ -50,21 +51,20 @@ export default function OrdenarPalabras({
             type="button"
             disabled={deshabilitado}
             onClick={() => agregar(i)}
-            className="rounded-lg border-2 border-chigui-tan bg-white px-3 py-1.5 font-semibold hover:border-brand-green"
+            className="rounded-full bg-white px-4 py-2 font-bold text-chigui-brown-dark shadow-soft transition hover:-translate-y-0.5 active:scale-95 disabled:cursor-not-allowed"
           >
             {palabra}
           </button>
         ))}
       </div>
 
-      <button
-        type="button"
+      <Boton
+        className="mt-4"
         disabled={orden.length !== contenido.palabras.length || deshabilitado}
         onClick={() => onResponder(orden)}
-        className="mt-4 rounded-full bg-brand-green px-6 py-2 font-bold text-white disabled:opacity-40"
       >
         Comprobar
-      </button>
+      </Boton>
     </div>
   );
 }

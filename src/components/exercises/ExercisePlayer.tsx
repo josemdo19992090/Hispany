@@ -14,7 +14,10 @@ import Emparejar from "./Emparejar";
 import OrdenarPalabras from "./OrdenarPalabras";
 import VerdaderoFalso from "./VerdaderoFalso";
 import EncontrarError from "./EncontrarError";
+import { ArrowRight, Check, RotateCcw, X } from "lucide-react";
 import ContenidoBloqueado from "@/components/ContenidoBloqueado";
+import ChiguiMascot from "@/components/ChiguiMascot";
+import Boton from "@/components/ui/Boton";
 import ReportarError from "./ReportarError";
 
 interface RespuestaRegistrada extends ResultadoEvaluacion {
@@ -80,25 +83,51 @@ export default function ExercisePlayer({
     const porcentaje = Math.round((correctas / total) * 100);
     const errores = historial.filter((h) => !h.correcta);
 
+    const aprobado = porcentaje >= 60;
+
     return (
-      <div className="rounded-xl2 border-2 border-chigui-tan bg-white p-5">
-        <h3 className="text-xl font-extrabold">
-          {porcentaje >= 60 ? "¡Bien hecho! 🎉" : "Sigue practicando 💪"}
-        </h3>
-        <p className="mt-1 text-chigui-brown">
-          Respondiste correctamente {correctas} de {total} ({porcentaje}%).
-        </p>
+      <div className="animate-aparecer rounded-card bg-white p-6 shadow-soft">
+        <div className="flex flex-col items-center text-center">
+          <ChiguiMascot
+            className="mb-3 h-24 w-24"
+            pose={aprobado ? "celebrando" : "animando"}
+          />
+          <h3 className="text-xl font-extrabold">
+            {aprobado ? "¡Bien hecho!" : "Sigue practicando"}
+          </h3>
+          <p className="mt-1 text-chigui-brown">
+            Acertaste {correctas} de {total}
+          </p>
+
+          <div className="mt-4 w-full max-w-xs">
+            <div className="h-3 w-full overflow-hidden rounded-full bg-chigui-cream">
+              <div
+                className={`h-full rounded-full transition-all ${
+                  aprobado ? "bg-brand-green" : "bg-brand-yellow"
+                }`}
+                style={{ width: `${porcentaje}%` }}
+              />
+            </div>
+            <p className="mt-1 text-sm font-bold">{porcentaje}%</p>
+          </div>
+        </div>
 
         {errores.length > 0 && mostrarErroresDetallados && (
-          <div className="mt-4">
-            <p className="mb-2 font-bold">Revisa tus errores:</p>
+          <div className="mt-6">
+            <p className="mb-2 font-bold">Revisa tus errores</p>
             <ul className="flex flex-col gap-2">
               {errores.map((e, i) => (
-                <li key={i} className="rounded-xl2 bg-chigui-cream p-3 text-sm">
-                  <p className="font-semibold">{ETIQUETA_TIPO_EJERCICIO[e.ejercicio.tipo]}</p>
-                  <p className="text-red-700">Tu respuesta: {e.respuestaDadaTexto}</p>
-                  <p className="text-brand-green">
-                    Respuesta correcta: {e.respuestaCorrectaTexto}
+                <li key={i} className="rounded-field bg-chigui-cream p-3 text-sm">
+                  <p className="mb-1 font-bold">
+                    {ETIQUETA_TIPO_EJERCICIO[e.ejercicio.tipo]}
+                  </p>
+                  <p className="flex items-start gap-1.5 text-brand-red">
+                    <X className="mt-0.5 h-4 w-4 shrink-0" aria-hidden="true" />
+                    {e.respuestaDadaTexto}
+                  </p>
+                  <p className="flex items-start gap-1.5 text-brand-green">
+                    <Check className="mt-0.5 h-4 w-4 shrink-0" aria-hidden="true" />
+                    {e.respuestaCorrectaTexto}
                   </p>
                 </li>
               ))}
@@ -107,34 +136,39 @@ export default function ExercisePlayer({
         )}
 
         {errores.length > 0 && !mostrarErroresDetallados && (
-          <div className="mt-4">
+          <div className="mt-6">
             <ContenidoBloqueado mensaje="El detalle de tus errores con las respuestas correctas es una función premium." />
           </div>
         )}
 
-        <button
-          type="button"
-          onClick={reiniciar}
-          className="mt-5 rounded-full bg-brand-green px-6 py-2 font-bold text-white"
-        >
-          Reintentar
-        </button>
+        <div className="mt-6 flex justify-center">
+          <Boton onClick={reiniciar}>
+            <RotateCcw className="h-4 w-4" aria-hidden="true" />
+            Reintentar
+          </Boton>
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="rounded-xl2 border-2 border-chigui-tan bg-white p-5">
-      <div className="mb-4">
-        <div className="mb-1 flex items-center justify-between text-xs font-semibold text-chigui-brown">
+    <div className="rounded-card bg-white p-5 shadow-soft">
+      <div className="mb-5">
+        <div className="mb-1.5 flex items-center justify-between text-xs font-bold text-chigui-brown">
           <span>
             Pregunta {indice + 1} de {ejercicios.length}
           </span>
           <span>{ETIQUETA_TIPO_EJERCICIO[ejercicioActual.tipo]}</span>
         </div>
-        <div className="h-2 w-full overflow-hidden rounded-full bg-chigui-cream">
+        <div
+          className="h-2.5 w-full overflow-hidden rounded-full bg-chigui-cream"
+          role="progressbar"
+          aria-valuenow={historial.length}
+          aria-valuemin={0}
+          aria-valuemax={ejercicios.length}
+        >
           <div
-            className="h-full rounded-full bg-brand-green transition-all"
+            className="h-full rounded-full bg-brand-green transition-all duration-300"
             style={{ width: `${(historial.length / ejercicios.length) * 100}%` }}
           />
         </div>
@@ -159,29 +193,49 @@ export default function ExercisePlayer({
 
       {resultadoActual && (
         <div
-          className={`mt-4 rounded-xl2 p-3 ${
-            resultadoActual.correcta ? "bg-brand-green/10" : "bg-red-100"
+          role="status"
+          className={`mt-4 rounded-card p-4 ${
+            resultadoActual.correcta
+              ? "animate-aparecer bg-brand-green/10"
+              : "animate-temblor bg-brand-red/10"
           }`}
         >
-          <p
-            className={`font-bold ${
-              resultadoActual.correcta ? "text-brand-green" : "text-red-700"
-            }`}
-          >
-            {resultadoActual.correcta ? "¡Correcto! ✅" : "Incorrecto ❌"}
-          </p>
-          {!resultadoActual.correcta && (
-            <p className="text-sm text-chigui-brown-dark">
-              Respuesta correcta: {resultadoActual.respuestaCorrectaTexto}
-            </p>
-          )}
-          <button
-            type="button"
-            onClick={siguiente}
-            className="mt-3 rounded-full bg-brand-green px-6 py-2 font-bold text-white"
-          >
-            {indice + 1 < ejercicios.length ? "Siguiente" : "Ver resumen"}
-          </button>
+          <div className="flex items-start gap-3">
+            <ChiguiMascot
+              className="h-12 w-12 shrink-0"
+              pose={resultadoActual.correcta ? "aprobando" : "animando"}
+            />
+            <div className="min-w-0 flex-1">
+              <p
+                className={`flex items-center gap-1.5 font-bold ${
+                  resultadoActual.correcta ? "text-brand-green" : "text-brand-red"
+                }`}
+              >
+                {resultadoActual.correcta ? (
+                  <>
+                    <Check className="h-5 w-5" aria-hidden="true" /> ¡Correcto!
+                  </>
+                ) : (
+                  <>
+                    <X className="h-5 w-5" aria-hidden="true" /> Casi
+                  </>
+                )}
+              </p>
+              {!resultadoActual.correcta && (
+                <p className="text-sm text-chigui-brown-dark">
+                  Respuesta correcta:{" "}
+                  <strong>{resultadoActual.respuestaCorrectaTexto}</strong>
+                </p>
+              )}
+            </div>
+          </div>
+
+          <div className="mt-3 flex justify-end">
+            <Boton onClick={siguiente}>
+              {indice + 1 < ejercicios.length ? "Siguiente" : "Ver resumen"}
+              <ArrowRight className="h-4 w-4" aria-hidden="true" />
+            </Boton>
+          </div>
         </div>
       )}
     </div>

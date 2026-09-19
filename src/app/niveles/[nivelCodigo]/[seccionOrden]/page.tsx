@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { ArrowLeft, Check, ClipboardCheck, Lock } from "lucide-react";
 import {
   getNivelPorCodigo,
   getSeccionesPorNivel,
@@ -10,6 +11,7 @@ import {
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { calcularEstadoPremium } from "@/lib/premium";
 import ContenidoBloqueado from "@/components/ContenidoBloqueado";
+import ChiguiMascot from "@/components/ChiguiMascot";
 
 export default async function SeccionPage({
   params,
@@ -40,42 +42,58 @@ export default async function SeccionPage({
 
   return (
     <div>
-      <Link href={`/niveles/${nivel.codigo}`} className="text-sm font-semibold text-brand-blue">
-        &larr; {nivel.nombre}
+      <Link
+        href={`/niveles/${nivel.codigo}`}
+        className="inline-flex items-center gap-1 text-sm font-semibold text-brand-blue"
+      >
+        <ArrowLeft className="h-4 w-4" aria-hidden="true" />
+        {nivel.nombre}
       </Link>
       <h1 className="mb-6 mt-2 text-2xl font-extrabold">{seccion.titulo}</h1>
 
       {clasesDeSeccion.length === 0 ? (
-        <p className="rounded-xl2 bg-white p-4 text-chigui-brown shadow-sm">
-          Todavía no hay clases cargadas para esta sección (datos de prueba pendientes).
-        </p>
+        <div className="rounded-card bg-white p-6 text-center shadow-soft">
+          <ChiguiMascot className="mx-auto mb-3 h-20 w-20" pose="durmiendo" />
+          <p className="text-chigui-brown">
+            Esta sección todavía no tiene clases cargadas.
+          </p>
+        </div>
       ) : (
         <ol className="flex flex-col gap-3">
-          {clasesDeSeccion.map((clase) =>
-            bloqueada ? (
-              <li key={clase.id}>
-                <div className="flex items-center gap-4 rounded-xl2 border-2 border-chigui-tan bg-chigui-cream p-4 opacity-70">
-                  <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-chigui-tan font-bold text-white">
-                    🔒
-                  </span>
-                  <p className="flex-1 font-bold">{clase.titulo}</p>
-                </div>
-              </li>
-            ) : (
+          {clasesDeSeccion.map((clase) => {
+            const hecha = completadas.has(clase.id);
+
+            if (bloqueada) {
+              return (
+                <li key={clase.id}>
+                  <div className="flex items-center gap-4 rounded-card bg-white/60 p-4 ring-1 ring-chigui-tan/40">
+                    <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-chigui-tan/60 text-white">
+                      <Lock className="h-4 w-4" aria-hidden="true" />
+                    </span>
+                    <p className="flex-1 font-bold text-chigui-brown">{clase.titulo}</p>
+                  </div>
+                </li>
+              );
+            }
+
+            return (
               <li key={clase.id}>
                 <Link
                   href={`/niveles/${nivel.codigo}/${seccion.orden}/${clase.orden}`}
-                  className="flex items-center gap-4 rounded-xl2 border-2 border-chigui-tan bg-white p-4 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md"
+                  className="flex items-center gap-4 rounded-card bg-white p-4 shadow-soft transition hover:-translate-y-0.5 hover:shadow-soft-lg"
                 >
-                  <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-brand-green font-bold text-white">
-                    {clase.orden}
+                  <span
+                    className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-full font-bold ${
+                      hecha ? "bg-brand-green text-white" : "bg-chigui-cream text-chigui-brown-dark"
+                    }`}
+                  >
+                    {hecha ? <Check className="h-5 w-5" aria-hidden="true" /> : clase.orden}
                   </span>
                   <p className="flex-1 font-bold">{clase.titulo}</p>
-                  {completadas.has(clase.id) && <span title="Completada">✅</span>}
                 </Link>
               </li>
-            )
-          )}
+            );
+          })}
         </ol>
       )}
 
@@ -85,12 +103,13 @@ export default async function SeccionPage({
         </div>
       )}
 
-      {!bloqueada && (
+      {!bloqueada && clasesDeSeccion.length > 0 && (
         <Link
           href={`/niveles/${nivel.codigo}/${seccion.orden}/prueba`}
-          className="mt-6 block rounded-xl2 border-2 border-dashed border-chigui-tan p-4 text-center text-sm font-bold text-chigui-brown hover:border-brand-green hover:text-brand-green"
+          className="mt-6 flex items-center justify-center gap-2 rounded-card bg-white p-4 text-center text-sm font-bold text-chigui-brown shadow-soft transition hover:-translate-y-0.5 hover:text-brand-green hover:shadow-soft-lg"
         >
-          📝 Prueba de cierre de sección (mezcla las 4 clases)
+          <ClipboardCheck className="h-4 w-4" aria-hidden="true" />
+          Prueba de cierre de sección
         </Link>
       )}
     </div>

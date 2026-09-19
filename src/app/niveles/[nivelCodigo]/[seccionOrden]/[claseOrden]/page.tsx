@@ -1,5 +1,15 @@
+import type { ReactNode } from "react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import {
+  ArrowLeft,
+  BookOpen,
+  FileDown,
+  GraduationCap,
+  Lock,
+  MessagesSquare,
+  PenLine,
+} from "lucide-react";
 import {
   getNivelPorCodigo,
   getSeccionesPorNivel,
@@ -15,6 +25,7 @@ import ClaseExercisePlayer from "@/components/exercises/ClaseExercisePlayer";
 import ContenidoBloqueado from "@/components/ContenidoBloqueado";
 import TextoConFormato from "@/components/TextoConFormato";
 import SelectorPerfil from "@/components/SelectorPerfil";
+import ChiguiMascot from "@/components/ChiguiMascot";
 
 export default async function ClasePage({
   params,
@@ -67,32 +78,40 @@ export default async function ClasePage({
     <div>
       <Link
         href={`/niveles/${nivel.codigo}/${seccion.orden}`}
-        className="text-sm font-semibold text-brand-blue"
+        className="inline-flex items-center gap-1 text-sm font-semibold text-brand-blue"
       >
-        &larr; {seccion.titulo}
+        <ArrowLeft className="h-4 w-4" aria-hidden="true" />
+        {seccion.titulo}
       </Link>
       <h1 className="mb-4 mt-2 text-2xl font-extrabold">{clase.titulo}</h1>
 
       <SelectorPerfil perfilActivo={perfilActivo} />
 
       {!version ? (
-        <p className="rounded-xl2 bg-white p-4 text-chigui-brown shadow-sm">
-          Todavía no hay contenido de prueba para el perfil &quot;{perfilActivo}&quot; en esta
-          clase.
-        </p>
+        <div className="rounded-card bg-white p-6 text-center shadow-soft">
+          <ChiguiMascot className="mx-auto mb-3 h-20 w-20" pose="durmiendo" />
+          <p className="text-chigui-brown">
+            Todavía no hay contenido para el perfil seleccionado en esta clase.
+          </p>
+        </div>
       ) : (
         <div className="flex flex-col gap-4">
-          <Bloque titulo="📖 Lectura" texto={version.lectura_md} />
-          <Bloque titulo="💬 Conversación" texto={version.conversacion_md} />
-          <Bloque titulo="📝 Gramática" texto={version.gramatica_md} />
-          <Bloque titulo="✍️ Escritura" texto={version.escritura_md} />
+          <Bloque icono={<BookOpen />} titulo="Lectura" texto={version.lectura_md} />
+          <Bloque
+            icono={<MessagesSquare />}
+            titulo="Conversación"
+            texto={version.conversacion_md}
+          />
+          <Bloque icono={<GraduationCap />} titulo="Gramática" texto={version.gramatica_md} />
+          <Bloque icono={<PenLine />} titulo="Escritura" texto={version.escritura_md} />
 
           {esPremium ? (
             <a
               href={`/api/pdf/clase/${clase.id}?perfil=${perfilActivo}`}
-              className="flex items-center justify-center gap-2 rounded-xl2 border-2 border-brand-blue bg-white p-3 text-center text-sm font-bold text-brand-blue hover:bg-brand-blue hover:text-white"
+              className="flex items-center justify-center gap-2 rounded-card bg-white p-4 text-center text-sm font-bold text-brand-blue shadow-soft transition hover:-translate-y-0.5 hover:shadow-soft-lg"
             >
-              📄 Descargar PDF de explicaciones
+              <FileDown className="h-4 w-4" aria-hidden="true" />
+              Descargar PDF de explicaciones
             </a>
           ) : (
             <ContenidoBloqueado mensaje="El PDF de explicaciones se genera al vuelo y es una función premium." />
@@ -102,9 +121,12 @@ export default async function ClasePage({
 
       <h2 className="mb-3 mt-8 text-lg font-bold">Ejercicios de comprobación</h2>
       {ejerciciosJugables.length === 0 ? (
-        <p className="rounded-xl2 bg-white p-4 text-chigui-brown shadow-sm">
-          Sin ejercicios de prueba para este perfil todavía.
-        </p>
+        <div className="rounded-card bg-white p-6 text-center shadow-soft">
+          <ChiguiMascot className="mx-auto mb-3 h-20 w-20" pose="durmiendo" />
+          <p className="text-chigui-brown">
+            Aún no hay ejercicios para este perfil.
+          </p>
+        </div>
       ) : (
         <ClaseExercisePlayer
           key={`${clase.id}-${perfilActivo}`}
@@ -115,20 +137,34 @@ export default async function ClasePage({
       )}
 
       {cantidadBloqueados > 0 && (
-        <p className="mt-4 rounded-xl2 border-2 border-dashed border-chigui-tan p-3 text-center text-sm text-chigui-brown">
-          🔒 {cantidadBloqueados} variante{cantidadBloqueados > 1 ? "s" : ""} extra premium
-          disponible{cantidadBloqueados > 1 ? "s" : ""} para practicar más.
+        <p className="mt-4 flex items-center justify-center gap-2 rounded-card bg-white/60 p-3 text-center text-sm text-chigui-brown ring-1 ring-chigui-tan/40">
+          <Lock className="h-4 w-4 shrink-0" aria-hidden="true" />
+          {cantidadBloqueados} variante{cantidadBloqueados > 1 ? "s" : ""} extra premium para
+          practicar más
         </p>
       )}
     </div>
   );
 }
 
-function Bloque({ titulo, texto }: { titulo: string; texto: string }) {
+function Bloque({
+  icono,
+  titulo,
+  texto,
+}: {
+  icono: ReactNode;
+  titulo: string;
+  texto: string;
+}) {
   return (
-    <div className="rounded-xl2 bg-white p-4 shadow-sm">
-      <p className="mb-1 font-bold">{titulo}</p>
-      <TextoConFormato texto={texto} className="text-sm text-chigui-brown" />
+    <div className="rounded-card bg-white p-5 shadow-soft">
+      <p className="mb-2 flex items-center gap-2 font-bold">
+        <span className="flex h-8 w-8 items-center justify-center rounded-full bg-chigui-cream text-brand-green [&>svg]:h-4 [&>svg]:w-4">
+          {icono}
+        </span>
+        {titulo}
+      </p>
+      <TextoConFormato texto={texto} className="text-chigui-brown" />
     </div>
   );
 }

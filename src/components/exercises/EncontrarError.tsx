@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import type { EjercicioContenido } from "@/types/content";
+import Boton from "@/components/ui/Boton";
 
 export default function EncontrarError({
   contenido,
@@ -17,10 +18,12 @@ export default function EncontrarError({
 
   return (
     <div>
-      <p className="mb-2 text-sm text-chigui-brown">
+      <p className="mb-1 text-lg font-bold">Encuentra el error</p>
+      <p className="mb-4 text-sm text-chigui-brown">
         Toca la palabra que está incorrecta en la frase.
       </p>
-      <p className="mb-4 flex flex-wrap text-lg font-semibold">
+
+      <p className="mb-2 flex flex-wrap items-center rounded-field bg-chigui-cream p-4 text-lg font-semibold">
         {palabras.map((palabra, i) => {
           if (palabra.trim() === "") return <span key={i}>{palabra}</span>;
           const limpia = palabra.replace(/[.,!?]/g, "");
@@ -29,26 +32,27 @@ export default function EncontrarError({
               key={i}
               type="button"
               disabled={deshabilitado}
+              aria-pressed={elegida === limpia}
               onClick={() => setElegida(limpia)}
-              className={`rounded px-0.5 transition ${
+              className={`rounded-lg px-1.5 py-0.5 transition disabled:cursor-not-allowed ${
                 elegida === limpia
-                  ? "bg-brand-green/20 underline decoration-brand-green decoration-2"
-                  : "hover:bg-chigui-tan/30"
-              } disabled:cursor-not-allowed`}
+                  ? "bg-brand-green text-white"
+                  : "hover:bg-chigui-tan/40"
+              }`}
             >
               {palabra}
             </button>
           );
         })}
       </p>
-      <button
-        type="button"
+
+      <Boton
+        className="mt-2"
         disabled={elegida === null || deshabilitado}
         onClick={() => elegida !== null && onResponder(elegida)}
-        className="mt-4 rounded-full bg-brand-green px-6 py-2 font-bold text-white disabled:opacity-40"
       >
         Comprobar
-      </button>
+      </Boton>
     </div>
   );
 }

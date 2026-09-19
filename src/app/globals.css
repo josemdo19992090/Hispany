@@ -10,11 +10,35 @@
 body {
   color: var(--foreground);
   background: var(--background);
-  font-family: var(--font-geist-sans), Arial, Helvetica, sans-serif;
+  font-family: var(--font-nunito), system-ui, sans-serif;
+}
+
+@layer base {
+  /* Antes los campos usaban `focus:outline-none` y solo cambiaban el color del
+     borde, así que navegar con teclado era casi imposible: no se veía dónde
+     estaba el foco. */
+  :focus-visible {
+    outline: none;
+    box-shadow:
+      0 0 0 2px #fbf3e7,
+      0 0 0 4px #1a7f58;
+    border-radius: 0.875rem;
+  }
 }
 
 @layer utilities {
   .text-balance {
     text-wrap: balance;
+  }
+}
+
+/* Respeta a quien pide menos animación por accesibilidad. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
   }
 }

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { TriangleAlert } from "lucide-react";
 import { reportarErrorEjercicio } from "@/lib/reportes";
 
 export default function ReportarError({ ejercicioId }: { ejercicioId: string }) {
@@ -9,7 +10,11 @@ export default function ReportarError({ ejercicioId }: { ejercicioId: string }) 
   const [estado, setEstado] = useState<"idle" | "enviando" | "enviado" | "sin_sesion">("idle");
 
   if (estado === "enviado") {
-    return <p className="mt-2 text-xs text-brand-green">Gracias, reportamos tu observación. ✅</p>;
+    return (
+      <p className="mt-3 text-xs font-semibold text-brand-green">
+        Gracias, revisaremos este ejercicio.
+      </p>
+    );
   }
 
   if (!abierto) {
@@ -17,9 +22,10 @@ export default function ReportarError({ ejercicioId }: { ejercicioId: string }) 
       <button
         type="button"
         onClick={() => setAbierto(true)}
-        className="mt-2 text-xs font-semibold text-chigui-brown underline decoration-dotted hover:text-brand-red"
+        className="mt-3 inline-flex items-center gap-1.5 text-xs font-semibold text-chigui-brown transition hover:text-brand-red"
       >
-        ⚠️ Reportar un error en este ejercicio
+        <TriangleAlert className="h-3.5 w-3.5" aria-hidden="true" />
+        Reportar un error
       </button>
     );
   }

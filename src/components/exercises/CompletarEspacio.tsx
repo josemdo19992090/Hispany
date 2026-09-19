@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import type { EjercicioContenido } from "@/types/content";
+import Boton from "@/components/ui/Boton";
 
 export default function CompletarEspacio({
   contenido,
@@ -22,9 +23,9 @@ export default function CompletarEspacio({
 
   return (
     <div>
-      <p className="mb-4 flex flex-wrap items-center gap-2 text-lg font-semibold">
+      <p className="mb-4 flex flex-wrap items-center gap-x-1 gap-y-2 text-lg font-bold">
         {partes.map((parte, i) => (
-          <span key={i} className="flex items-center gap-2">
+          <span key={i} className="flex items-center gap-1">
             <span>{parte}</span>
             {i < cantidadEspacios && (
               <input
@@ -32,20 +33,22 @@ export default function CompletarEspacio({
                 disabled={deshabilitado}
                 value={valores[i]}
                 onChange={(e) => actualizar(i, e.target.value)}
-                className="w-28 rounded-lg border-2 border-chigui-tan px-2 py-1 text-base font-normal focus:border-brand-green focus:outline-none disabled:bg-chigui-cream"
+                aria-label={`Espacio ${i + 1}`}
+                autoComplete="off"
+                className="w-32 rounded-field bg-chigui-cream px-3 py-1.5 text-base font-semibold text-chigui-brown-dark placeholder:text-chigui-tan disabled:opacity-70"
+                placeholder="..."
               />
             )}
           </span>
         ))}
       </p>
-      <button
-        type="button"
+      <Boton
+        className="mt-2"
         disabled={deshabilitado || valores.some((v) => v.trim() === "")}
         onClick={() => onResponder(valores)}
-        className="mt-4 rounded-full bg-brand-green px-6 py-2 font-bold text-white disabled:opacity-40"
       >
         Comprobar
-      </button>
+      </Boton>
     </div>
   );
 }
