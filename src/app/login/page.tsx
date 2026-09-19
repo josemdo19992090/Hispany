@@ -6,11 +6,13 @@ import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
 import { createSupabaseBrowserClient } from "@/lib/supabase/browser";
 import Boton from "@/components/ui/Boton";
-import TextoBilingue from "@/components/ui/TextoBilingue";
+import Texto from "@/components/ui/Texto";
 import { ui } from "@/lib/i18n/diccionario";
+import { useIdioma } from "@/lib/i18n/context";
 import type { PerfilAlumno } from "@/types/content";
 
 export default function LoginPage() {
+  const { idioma } = useIdioma();
   const [modo, setModo] = useState<"login" | "registro">("login");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -33,7 +35,7 @@ export default function LoginPage() {
     if (modo === "login") {
       const { error } = await supabase.auth.signInWithPassword({ email, password });
       if (error) {
-        setError("Correo o contraseña incorrectos (неверная почта или пароль)");
+        setError(ui.correoOContrasenaIncorrectos[idioma]);
       } else {
         router.push("/");
         router.refresh();
@@ -56,7 +58,7 @@ export default function LoginPage() {
   return (
     <div className="mx-auto max-w-sm">
       <h1 className="mb-4 text-center text-xl font-extrabold">
-        <TextoBilingue
+        <Texto
           clave={modo === "login" ? "bienvenidoDeVuelta" : "creaTuCuentaGratis"}
         />
       </h1>
@@ -72,7 +74,7 @@ export default function LoginPage() {
               : "text-chigui-brown hover:text-chigui-brown-dark"
           }`}
         >
-          <TextoBilingue clave="iniciarSesion" modo="en_linea" />
+          <Texto clave="iniciarSesion" />
         </button>
         <button
           type="button"
@@ -84,7 +86,7 @@ export default function LoginPage() {
               : "text-chigui-brown hover:text-chigui-brown-dark"
           }`}
         >
-          <TextoBilingue clave="crearCuenta" modo="en_linea" />
+          <Texto clave="crearCuenta" />
         </button>
       </div>
 
@@ -96,7 +98,7 @@ export default function LoginPage() {
         {modo === "registro" && (
           <>
             <label className="flex flex-col gap-1 text-sm font-semibold">
-              <TextoBilingue clave="nombre" modo="en_linea" />
+              <Texto clave="nombre" />
               <input
                 type="text"
                 value={nombre}
@@ -106,7 +108,7 @@ export default function LoginPage() {
             </label>
 
             <div className="flex flex-col gap-1 text-sm font-semibold">
-              <TextoBilingue clave="paraQuienEsLaCuenta" modo="en_linea" />
+              <Texto clave="paraQuienEsLaCuenta" />
               <div className="flex gap-2">
                 <button
                   type="button"
@@ -118,8 +120,7 @@ export default function LoginPage() {
                       : "bg-chigui-cream text-chigui-brown-dark"
                   }`}
                 >
-                  {ui.perfilNinos.es}{" "}
-                  <span className="font-normal opacity-70">({ui.perfilNinos.ru})</span>
+                  {ui.perfilNinos[idioma]}
                 </button>
                 <button
                   type="button"
@@ -131,17 +132,14 @@ export default function LoginPage() {
                       : "bg-chigui-cream text-chigui-brown-dark"
                   }`}
                 >
-                  {ui.perfilTrabajoViajes.es}{" "}
-                  <span className="font-normal opacity-70">
-                    ({ui.perfilTrabajoViajes.ru})
-                  </span>
+                  {ui.perfilTrabajoViajes[idioma]}
                 </button>
               </div>
             </div>
           </>
         )}
         <label className="flex flex-col gap-1 text-sm font-semibold">
-          <TextoBilingue clave="correo" modo="en_linea" />
+          <Texto clave="correo" />
           <input
             type="email"
             required
@@ -151,7 +149,7 @@ export default function LoginPage() {
           />
         </label>
         <label className="flex flex-col gap-1 text-sm font-semibold">
-          <TextoBilingue clave="contrasena" modo="en_linea" />
+          <Texto clave="contrasena" />
           <input
             type="password"
             required
@@ -164,20 +162,11 @@ export default function LoginPage() {
 
         {error && <p className="text-sm text-brand-red">{error}</p>}
         {avisoRegistro && (
-          <p className="text-sm text-brand-green">
-            ¡Cuenta creada! Revisa tu correo para confirmarla.
-            <br />
-            <span className="opacity-70">
-              (Аккаунт создан! Проверь почту и подтверди его.)
-            </span>
-          </p>
+          <p className="text-sm text-brand-green">{ui.cuentaCreadaRevisaCorreo[idioma]}</p>
         )}
 
         <Boton type="submit" disabled={cargando} className="mt-2">
-          <TextoBilingue
-            clave={modo === "login" ? "entrar" : "crearCuenta"}
-            modo="en_linea"
-          />
+          <Texto clave={modo === "login" ? "entrar" : "crearCuenta"} />
         </Boton>
       </form>
 
@@ -186,8 +175,7 @@ export default function LoginPage() {
         className="mt-4 flex items-center justify-center gap-1 text-center text-sm font-semibold text-brand-blue"
       >
         <ArrowLeft className="h-4 w-4" aria-hidden="true" />
-        {ui.seguirSinCuenta.es}{" "}
-        <span className="opacity-70">({ui.seguirSinCuenta.ru})</span>
+        {ui.seguirSinCuenta[idioma]}
       </Link>
     </div>
   );

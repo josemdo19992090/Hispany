@@ -8,8 +8,9 @@ import { resolverPerfilActivo } from "@/lib/perfil";
 import PruebaExercisePlayer from "@/components/exercises/PruebaExercisePlayer";
 import ContenidoBloqueado from "@/components/ContenidoBloqueado";
 import SelectorPerfil from "@/components/SelectorPerfil";
-import TextoBilingue from "@/components/ui/TextoBilingue";
+import Texto from "@/components/ui/Texto";
 import { ui } from "@/lib/i18n/diccionario";
+import { obtenerIdioma } from "@/lib/i18n/server";
 
 export default async function PruebaFinalNivelPage({
   params,
@@ -24,6 +25,7 @@ export default async function PruebaFinalNivelPage({
   const supabase = await createSupabaseServerClient();
   const usuario = supabase ? await getUsuarioActual(supabase) : null;
   const { esPremium } = calcularEstadoPremium(usuario);
+  const idioma = await obtenerIdioma();
 
   const encabezado = (
     <>
@@ -34,7 +36,7 @@ export default async function PruebaFinalNivelPage({
         <ArrowLeft className="h-4 w-4" aria-hidden="true" />
         {nivel.nombre}
       </Link>
-      <h1 className="mb-1 mt-2 text-2xl font-extrabold">{ui.pruebaFinalTitulo.es}</h1>
+      <h1 className="mb-1 mt-2 text-2xl font-extrabold">{ui.pruebaFinalTitulo[idioma]}</h1>
     </>
   );
 
@@ -45,9 +47,9 @@ export default async function PruebaFinalNivelPage({
       <div>
         {encabezado}
         <p className="mb-6 text-chigui-brown">
-          {ui.mezclaTodasLasSecciones.es} ({nivel.nombre}).
+          {ui.mezclaTodasLasSecciones[idioma]} ({nivel.nombre}).
         </p>
-        <ContenidoBloqueado mensajeClave="mensajePruebaFinalPremium" />
+        <ContenidoBloqueado mensajeClave="mensajePruebaFinalPremium" idioma={idioma} />
       </div>
     );
   }
@@ -61,18 +63,14 @@ export default async function PruebaFinalNivelPage({
     <div>
       {encabezado}
       <p className="mb-6 text-chigui-brown">
-        {ui.mezclaTodasLasSecciones.es} ({nivel.nombre}). {ui.necesitas60Aprobar.es}.
-        <br />
-        <span className="opacity-70">
-          {ui.mezclaTodasLasSecciones.ru} ({nivel.nombre}). {ui.necesitas60Aprobar.ru}.
-        </span>
+        {ui.mezclaTodasLasSecciones[idioma]} ({nivel.nombre}). {ui.necesitas60Aprobar[idioma]}.
       </p>
 
-      <SelectorPerfil perfilActivo={perfilActivo} />
+      <SelectorPerfil perfilActivo={perfilActivo} idioma={idioma} />
 
       {ejerciciosPerfil.length === 0 ? (
         <div className="rounded-card bg-white p-4 shadow-soft">
-          <TextoBilingue clave="sinEjerciciosPrueba" as="p" className="text-chigui-brown" />
+          <Texto clave="sinEjerciciosPrueba" as="p" className="text-chigui-brown" />
         </div>
       ) : (
         <PruebaExercisePlayer

@@ -3,8 +3,9 @@
 import { useState } from "react";
 import type { EjercicioContenido } from "@/types/content";
 import Boton from "@/components/ui/Boton";
-import TextoBilingue from "@/components/ui/TextoBilingue";
+import Texto from "@/components/ui/Texto";
 import { ui } from "@/lib/i18n/diccionario";
+import { useIdioma } from "@/lib/i18n/context";
 
 export default function EncontrarError({
   contenido,
@@ -15,20 +16,14 @@ export default function EncontrarError({
   deshabilitado: boolean;
   onResponder: (respuesta: string) => void;
 }) {
+  const { idioma } = useIdioma();
   const [elegida, setElegida] = useState<string | null>(null);
   const palabras = contenido.texto.split(/(\s+)/); // conserva espacios
 
   return (
     <div>
-      <p className="mb-1 text-lg font-bold">
-        {ui.encuentraElError.es}{" "}
-        <span className="font-normal opacity-60">({ui.encuentraElError.ru})</span>
-      </p>
-      <p className="mb-4 text-sm text-chigui-brown">
-        {ui.tocaLaPalabraIncorrecta.es}
-        <br />
-        <span className="opacity-70">{ui.tocaLaPalabraIncorrecta.ru}</span>
-      </p>
+      <p className="mb-1 text-lg font-bold">{ui.encuentraElError[idioma]}</p>
+      <p className="mb-4 text-sm text-chigui-brown">{ui.tocaLaPalabraIncorrecta[idioma]}</p>
 
       <p className="mb-2 flex flex-wrap items-center rounded-field bg-chigui-cream p-4 text-lg font-semibold">
         {palabras.map((palabra, i) => {
@@ -58,7 +53,7 @@ export default function EncontrarError({
         disabled={elegida === null || deshabilitado}
         onClick={() => elegida !== null && onResponder(elegida)}
       >
-        <TextoBilingue clave="comprobar" modo="en_linea" />
+        <Texto clave="comprobar" />
       </Boton>
     </div>
   );

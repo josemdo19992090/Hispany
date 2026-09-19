@@ -8,7 +8,8 @@ import {
   type ResultadoEvaluacion,
 } from "@/lib/exercises";
 import { ui, etiquetaTipoEjercicio } from "@/lib/i18n/diccionario";
-import TextoBilingue from "@/components/ui/TextoBilingue";
+import Texto from "@/components/ui/Texto";
+import { useIdioma } from "@/lib/i18n/context";
 import OpcionMultiple from "./OpcionMultiple";
 import CompletarEspacio from "./CompletarEspacio";
 import Emparejar from "./Emparejar";
@@ -40,6 +41,7 @@ export default function ExercisePlayer({
   onTerminar?: (resumen: ResumenFinal) => void;
   mostrarErroresDetallados?: boolean;
 }) {
+  const { idioma } = useIdioma();
   const [indice, setIndice] = useState(0);
   const [resultadoActual, setResultadoActual] = useState<ResultadoEvaluacion | null>(null);
   const [historial, setHistorial] = useState<RespuestaRegistrada[]>([]);
@@ -93,17 +95,13 @@ export default function ExercisePlayer({
             className="mb-3 h-24 w-24"
             pose={aprobado ? "celebrando" : "animando"}
           />
-          <TextoBilingue
+          <Texto
             clave={aprobado ? "bienHecho" : "sigueRracticando"}
             as="h3"
             className="text-xl font-extrabold"
           />
           <p className="mt-1 text-chigui-brown">
-            {ui.acertaste.es} {correctas} {ui.de.es} {total}
-            <br />
-            <span className="text-sm opacity-70">
-              {ui.acertaste.ru} {correctas} {ui.de.ru} {total}
-            </span>
+            {ui.acertaste[idioma]} {correctas} {ui.de[idioma]} {total}
           </p>
 
           <div className="mt-4 w-full max-w-xs">
@@ -121,15 +119,12 @@ export default function ExercisePlayer({
 
         {errores.length > 0 && mostrarErroresDetallados && (
           <div className="mt-6">
-            <TextoBilingue clave="revisaTusErrores" as="p" className="mb-2 font-bold" />
+            <Texto clave="revisaTusErrores" as="p" className="mb-2 font-bold" />
             <ul className="flex flex-col gap-2">
               {errores.map((e, i) => (
                 <li key={i} className="rounded-field bg-chigui-cream p-3 text-sm">
                   <p className="mb-1 font-bold">
-                    {etiquetaTipoEjercicio[e.ejercicio.tipo].es}{" "}
-                    <span className="font-normal opacity-60">
-                      ({etiquetaTipoEjercicio[e.ejercicio.tipo].ru})
-                    </span>
+                    {etiquetaTipoEjercicio[e.ejercicio.tipo][idioma]}
                   </p>
                   <p className="flex items-start gap-1.5 text-brand-red">
                     <X className="mt-0.5 h-4 w-4 shrink-0" aria-hidden="true" />
@@ -147,14 +142,14 @@ export default function ExercisePlayer({
 
         {errores.length > 0 && !mostrarErroresDetallados && (
           <div className="mt-6">
-            <ContenidoBloqueado mensajeClave="mensajeErroresPremium" />
+            <ContenidoBloqueado mensajeClave="mensajeErroresPremium" idioma={idioma} />
           </div>
         )}
 
         <div className="mt-6 flex justify-center">
           <Boton onClick={reiniciar}>
             <RotateCcw className="h-4 w-4" aria-hidden="true" />
-            <TextoBilingue clave="reintentar" modo="en_linea" />
+            <Texto clave="reintentar" />
           </Boton>
         </div>
       </div>
@@ -166,12 +161,9 @@ export default function ExercisePlayer({
       <div className="mb-5">
         <div className="mb-1.5 flex items-center justify-between text-xs font-bold text-chigui-brown">
           <span>
-            {ui.pregunta.es} {indice + 1} {ui.de.es} {ejercicios.length}{" "}
-            <span className="font-normal opacity-60">
-              ({ui.pregunta.ru} {indice + 1} {ui.de.ru} {ejercicios.length})
-            </span>
+            {ui.pregunta[idioma]} {indice + 1} {ui.de[idioma]} {ejercicios.length}
           </span>
-          <span>{etiquetaTipoEjercicio[ejercicioActual.tipo].es}</span>
+          <span>{etiquetaTipoEjercicio[ejercicioActual.tipo][idioma]}</span>
         </div>
         <div
           className="h-2.5 w-full overflow-hidden rounded-full bg-chigui-cream"
@@ -227,20 +219,18 @@ export default function ExercisePlayer({
                 {resultadoActual.correcta ? (
                   <>
                     <Check className="h-5 w-5" aria-hidden="true" />
-                    {ui.correcto.es}{" "}
-                    <span className="font-normal opacity-60">({ui.correcto.ru})</span>
+                    {ui.correcto[idioma]}
                   </>
                 ) : (
                   <>
                     <X className="h-5 w-5" aria-hidden="true" />
-                    {ui.casi.es}{" "}
-                    <span className="font-normal opacity-60">({ui.casi.ru})</span>
+                    {ui.casi[idioma]}
                   </>
                 )}
               </p>
               {!resultadoActual.correcta && (
                 <p className="text-sm text-chigui-brown-dark">
-                  {ui.respuestaCorrecta.es}:{" "}
+                  {ui.respuestaCorrecta[idioma]}:{" "}
                   <strong>{resultadoActual.respuestaCorrectaTexto}</strong>
                 </p>
               )}
@@ -249,10 +239,7 @@ export default function ExercisePlayer({
 
           <div className="mt-3 flex justify-end">
             <Boton onClick={siguiente}>
-              <TextoBilingue
-                clave={indice + 1 < ejercicios.length ? "siguiente" : "verResumen"}
-                modo="en_linea"
-              />
+              <Texto clave={indice + 1 < ejercicios.length ? "siguiente" : "verResumen"} />
               <ArrowRight className="h-4 w-4" aria-hidden="true" />
             </Boton>
           </div>

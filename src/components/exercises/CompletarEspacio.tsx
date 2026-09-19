@@ -3,7 +3,7 @@
 import { useState } from "react";
 import type { EjercicioContenido } from "@/types/content";
 import Boton from "@/components/ui/Boton";
-import TextoBilingue from "@/components/ui/TextoBilingue";
+import Texto from "@/components/ui/Texto";
 
 export default function CompletarEspacio({
   contenido,
@@ -48,7 +48,7 @@ export default function CompletarEspacio({
         disabled={deshabilitado || valores.some((v) => v.trim() === "")}
         onClick={() => onResponder(valores)}
       >
-        <TextoBilingue clave="comprobar" modo="en_linea" />
+        <Texto clave="comprobar" />
       </Boton>
     </div>
   );

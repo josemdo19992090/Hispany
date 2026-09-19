@@ -36,9 +36,16 @@ Ya pasó un bug real por esto: **cada `key` de React debe ser única entre herma
 
 ## Idioma de la interfaz
 
-Bilingüe **español + ruso**: instrucciones/navegación en **español primero** (es el idioma que se está aprendiendo — verlo reforzado en toda la app ayuda a la inmersión), con el ruso visible al lado/debajo en tamaño menor como apoyo. Decisión del dueño, corregida una vez (el primer intento puso el ruso primero por error — no repetir eso).
+**Selector ES/RU, no bilingüe simultáneo.** La app muestra un solo idioma de UI a la vez (nunca los dos apilados en pantalla — eso se probó y no gustó). Hay un selector de idioma disponible en toda la web app, en el header (`src/components/ui/SelectorIdioma.tsx`).
 
-Diccionario de UI en `src/lib/i18n/diccionario.ts`, cada entrada `{ ru, es }`. El componente `src/components/ui/TextoBilingue.tsx` ya renderiza `es` como principal y `ru` como secundario — úsalo en vez de escribir el patrón a mano. Si hace falta escribirlo a mano (texto con variables interpoladas), el orden es siempre **`.es` visible primero/grande, `.ru` entre paréntesis o en un `span` secundario después**.
+Cómo funciona:
+- `src/lib/i18n/idioma.ts`: tipo `Idioma = "es" | "ru"`, nombre de la cookie (`hispany-idioma`) y default (`es`).
+- `src/lib/i18n/server.ts`: `obtenerIdioma()` lee la cookie desde Server Components (`cookies()` de `next/headers`).
+- `src/lib/i18n/context.tsx`: `IdiomaProvider` (client, montado en `src/app/layout.tsx`) + hook `useIdioma()`. Cambiar de idioma escribe la cookie y llama `router.refresh()` para que las Server Components (páginas de niveles, clases, etc.) se vuelvan a renderizar en el idioma nuevo.
+- `src/components/ui/Texto.tsx`: componente client que renderiza `ui[clave][idioma]` — úsalo en vez de escribir el patrón a mano cuando el texto no tiene variables interpoladas.
+- Para texto con variables interpoladas (no cabe en `<Texto clave="..." />`): en Server Components, `obtenerIdioma()` y usar `ui.clave[idioma]` directo; en Client Components, `const { idioma } = useIdioma()` y lo mismo. Nunca apilar `.es` y `.ru` en el mismo render.
+
+Diccionario de UI en `src/lib/i18n/diccionario.ts`, cada entrada `{ ru, es }` — es solo para el *chrome* de la app (botones, menús, mensajes), no para contenido pedagógico.
 
 El panel `/admin` es solo para el dueño, se queda en español únicamente — no traducir nada ahí.
 

@@ -3,9 +3,10 @@ import Image from "next/image";
 // Chigui no es solo un logo: acompaña al alumno y reacciona a lo que pasa
 // (saluda, celebra, anima tras un error, duerme en las pantallas vacías).
 //
-// Estado de los assets: solo "durmiendo" llegó como PNG con transparencia.
-// El resto todavía apunta al JPEG original; en cuanto lleguen los PNG recortados
-// basta con añadir el archivo a /public/mascota y mapearlo aquí.
+// Estado de los assets: "bloqueado" todavía no tiene arte propio y usa
+// "durmiendo" de respaldo (más neutral que forzar una pose que no encaja).
+// En cuanto llegue el PNG con transparencia, solo hay que añadirlo a
+// /public/mascota y mapearlo aquí.
 export type PoseChigui =
   | "saludando"
   | "celebrando"
@@ -15,12 +16,12 @@ export type PoseChigui =
   | "bloqueado";
 
 const ARCHIVOS: Record<PoseChigui, string> = {
-  saludando: "/mascota/chigui.jpeg",
-  celebrando: "/mascota/chigui.jpeg",
-  aprobando: "/mascota/chigui.jpeg",
-  animando: "/mascota/chigui.jpeg",
+  saludando: "/mascota/saludando.png",
+  celebrando: "/mascota/celebrando.png",
+  aprobando: "/mascota/aprobando.png",
+  animando: "/mascota/animando.png",
   durmiendo: "/mascota/durmiendo.png",
-  bloqueado: "/mascota/chigui.jpeg",
+  bloqueado: "/mascota/durmiendo.png",
 };
 
 const DESCRIPCIONES: Record<PoseChigui, string> = {

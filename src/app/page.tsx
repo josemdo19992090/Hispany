@@ -2,7 +2,7 @@ import { ChevronRight } from "lucide-react";
 import { getNiveles } from "@/lib/data";
 import ChiguiMascot from "@/components/ChiguiMascot";
 import { TarjetaEnlace } from "@/components/ui/Tarjeta";
-import TextoBilingue from "@/components/ui/TextoBilingue";
+import Texto from "@/components/ui/Texto";
 
 export default async function HomePage() {
   const niveles = await getNiveles();
@@ -12,12 +12,12 @@ export default async function HomePage() {
       <section className="mb-8 flex items-center gap-4 rounded-card bg-white p-5 shadow-soft">
         <ChiguiMascot className="h-20 w-20 shrink-0" pose="saludando" />
         <div>
-          <TextoBilingue clave="holaSoyChigui" as="h1" className="text-2xl font-extrabold" />
-          <TextoBilingue clave="elgieNivel" as="p" className="mt-1 text-chigui-brown" />
+          <Texto clave="holaSoyChigui" as="h1" className="text-2xl font-extrabold" />
+          <Texto clave="elgieNivel" as="p" className="mt-1 text-chigui-brown" />
         </div>
       </section>
 
-      <TextoBilingue
+      <Texto
         clave="niveles"
         as="h2"
         className="mb-3 text-sm font-bold uppercase tracking-wide text-chigui-brown"

@@ -4,8 +4,9 @@ import { useState } from "react";
 import { Check, X } from "lucide-react";
 import type { EjercicioContenido } from "@/types/content";
 import Boton from "@/components/ui/Boton";
-import TextoBilingue from "@/components/ui/TextoBilingue";
+import Texto from "@/components/ui/Texto";
 import { ui } from "@/lib/i18n/diccionario";
+import { useIdioma } from "@/lib/i18n/context";
 
 export default function VerdaderoFalso({
   contenido,
@@ -16,6 +17,7 @@ export default function VerdaderoFalso({
   deshabilitado: boolean;
   onResponder: (respuesta: boolean) => void;
 }) {
+  const { idioma } = useIdioma();
   const [elegido, setElegido] = useState<boolean | null>(null);
 
   return (
@@ -40,7 +42,7 @@ export default function VerdaderoFalso({
             ) : (
               <X className="h-5 w-5" aria-hidden="true" />
             )}
-            {valor ? ui.verdadero.es : ui.falso.es}
+            {valor ? ui.verdadero[idioma] : ui.falso[idioma]}
           </button>
         ))}
       </div>
@@ -49,7 +51,7 @@ export default function VerdaderoFalso({
         disabled={elegido === null || deshabilitado}
         onClick={() => elegido !== null && onResponder(elegido)}
       >
-        <TextoBilingue clave="comprobar" modo="en_linea" />
+        <Texto clave="comprobar" />
       </Boton>
     </div>
   );

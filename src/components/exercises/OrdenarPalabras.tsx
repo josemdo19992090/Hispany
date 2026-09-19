@@ -3,8 +3,9 @@
 import { useState } from "react";
 import type { EjercicioContenido } from "@/types/content";
 import Boton from "@/components/ui/Boton";
-import TextoBilingue from "@/components/ui/TextoBilingue";
+import Texto from "@/components/ui/Texto";
 import { ui } from "@/lib/i18n/diccionario";
+import { useIdioma } from "@/lib/i18n/context";
 
 export default function OrdenarPalabras({
   contenido,
@@ -15,6 +16,7 @@ export default function OrdenarPalabras({
   deshabilitado: boolean;
   onResponder: (respuesta: number[]) => void;
 }) {
+  const { idioma } = useIdioma();
   const [orden, setOrden] = useState<number[]>([]);
 
   const disponibles = contenido.palabras
@@ -27,14 +29,11 @@ export default function OrdenarPalabras({
 
   return (
     <div>
-      <p className="mb-4 text-lg font-bold">
-        {ui.ordenaLasPalabras.es}{" "}
-        <span className="font-normal opacity-60">({ui.ordenaLasPalabras.ru})</span>
-      </p>
+      <p className="mb-4 text-lg font-bold">{ui.ordenaLasPalabras[idioma]}</p>
 
       <div className="mb-4 flex min-h-[4rem] flex-wrap content-start gap-2 rounded-field bg-chigui-cream p-3">
         {orden.length === 0 && (
-          <span className="text-sm text-chigui-brown">{ui.tocaEnOrden.es}</span>
+          <span className="text-sm text-chigui-brown">{ui.tocaEnOrden[idioma]}</span>
         )}
         {orden.map((i, posicion) => (
           <button
@@ -68,7 +67,7 @@ export default function OrdenarPalabras({
         disabled={orden.length !== contenido.palabras.length || deshabilitado}
         onClick={() => onResponder(orden)}
       >
-        <TextoBilingue clave="comprobar" modo="en_linea" />
+        <Texto clave="comprobar" />
       </Boton>
     </div>
   );

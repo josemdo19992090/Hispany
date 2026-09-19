@@ -3,8 +3,9 @@
 import { useMemo, useState } from "react";
 import type { EjercicioContenido } from "@/types/content";
 import Boton from "@/components/ui/Boton";
-import TextoBilingue from "@/components/ui/TextoBilingue";
+import Texto from "@/components/ui/Texto";
 import { ui } from "@/lib/i18n/diccionario";
+import { useIdioma } from "@/lib/i18n/context";
 
 // Hash simple y estable de una cadena. Se usa para desordenar las opciones de
 // forma determinista: si usáramos Math.random() el orden cambiaría en cada
@@ -26,6 +27,7 @@ export default function Emparejar({
   deshabilitado: boolean;
   onResponder: (respuesta: Record<string, string>) => void;
 }) {
+  const { idioma } = useIdioma();
   const [elegidos, setElegidos] = useState<Record<string, string>>({});
   const [izquierdaActiva, setIzquierdaActiva] = useState<string | null>(null);
 
@@ -61,14 +63,8 @@ export default function Emparejar({
 
   return (
     <div>
-      <p className="mb-1 text-lg font-bold">
-        {ui.empareja.es} <span className="font-normal opacity-60">({ui.empareja.ru})</span>
-      </p>
-      <p className="mb-4 text-sm text-chigui-brown">
-        {ui.tocaIzquierdaLuegoDerecha.es}
-        <br />
-        <span className="opacity-70">{ui.tocaIzquierdaLuegoDerecha.ru}</span>
-      </p>
+      <p className="mb-1 text-lg font-bold">{ui.empareja[idioma]}</p>
+      <p className="mb-4 text-sm text-chigui-brown">{ui.tocaIzquierdaLuegoDerecha[idioma]}</p>
 
       <div className="grid grid-cols-2 gap-3">
         <div className="flex flex-col gap-2">
@@ -127,7 +123,7 @@ export default function Emparejar({
         disabled={!completo || deshabilitado}
         onClick={() => onResponder(elegidos)}
       >
-        <TextoBilingue clave="comprobar" modo="en_linea" />
+        <Texto clave="comprobar" />
       </Boton>
     </div>
   );

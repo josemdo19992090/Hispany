@@ -21,6 +21,14 @@ export const ui = {
   nombre: { ru: "Имя", es: "Nombre" },
   seguirSinCuenta: { ru: "Продолжить без аккаунта", es: "Seguir explorando sin cuenta" },
   paraQuienEsLaCuenta: { ru: "Для кого этот аккаунт?", es: "¿Para quién es esta cuenta?" },
+  correoOContrasenaIncorrectos: {
+    ru: "Неверная почта или пароль",
+    es: "Correo o contraseña incorrectos",
+  },
+  cuentaCreadaRevisaCorreo: {
+    ru: "Аккаунт создан! Проверь почту и подтверди его.",
+    es: "¡Cuenta creada! Revisa tu correo para confirmarla.",
+  },
 
   // Home
   holaSoyChigui: { ru: "Привет! Я Чигуи", es: "¡Hola! Soy Chigui" },

@@ -3,7 +3,7 @@
 import { useState } from "react";
 import type { EjercicioContenido } from "@/types/content";
 import Boton from "@/components/ui/Boton";
-import TextoBilingue from "@/components/ui/TextoBilingue";
+import Texto from "@/components/ui/Texto";
 
 export default function OpcionMultiple({
   contenido,
@@ -42,7 +42,7 @@ export default function OpcionMultiple({
         disabled={elegida === null || deshabilitado}
         onClick={() => elegida !== null && onResponder(elegida)}
       >
-        <TextoBilingue clave="comprobar" modo="en_linea" />
+        <Texto clave="comprobar" />
       </Boton>
     </div>
   );

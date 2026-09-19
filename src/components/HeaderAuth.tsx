@@ -2,7 +2,8 @@ import Link from "next/link";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { getUsuarioActual } from "@/lib/data";
 import { calcularEstadoPremium } from "@/lib/premium";
-import TextoBilingue from "@/components/ui/TextoBilingue";
+import Texto from "@/components/ui/Texto";
+import { obtenerIdioma } from "@/lib/i18n/server";
 import CerrarSesionButton from "./CerrarSesionButton";
 
 export default async function HeaderAuth() {
@@ -19,13 +20,14 @@ export default async function HeaderAuth() {
         href="/login"
         className="rounded-full bg-brand-green px-4 py-1.5 text-sm font-bold text-white"
       >
-        <TextoBilingue clave="iniciarSesion" modo="en_linea" />
+        <Texto clave="iniciarSesion" />
       </Link>
     );
   }
 
   const usuario = await getUsuarioActual(supabase);
   const { enTrial, diasRestantesTrial } = calcularEstadoPremium(usuario);
+  const idioma = await obtenerIdioma();
 
   return (
     <div className="flex items-center gap-3 text-sm">
@@ -39,10 +41,10 @@ export default async function HeaderAuth() {
       )}
       {enTrial && diasRestantesTrial !== null && (
         <span className="hidden rounded-full bg-brand-yellow px-3 py-1 text-xs font-bold text-chigui-brown-dark sm:inline">
-          🎁 {diasRestantesTrial} día{diasRestantesTrial === 1 ? "" : "s"} de prueba{" "}
-          <span className="opacity-70">
-            ({diasRestantesTrial} дн. пробного периода)
-          </span>
+          🎁{" "}
+          {idioma === "es"
+            ? `${diasRestantesTrial} día${diasRestantesTrial === 1 ? "" : "s"} de prueba`
+            : `${diasRestantesTrial} дн. пробного периода`}
         </span>
       )}
       <span className="hidden text-chigui-brown sm:inline">{user.email}</span>

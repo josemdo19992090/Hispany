@@ -10,8 +10,9 @@ import {
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { calcularEstadoPremium } from "@/lib/premium";
 import { NOMBRE_RANGO, type RangoMaestria } from "@/types/content";
-import TextoBilingue from "@/components/ui/TextoBilingue";
+import Texto from "@/components/ui/Texto";
 import { ui } from "@/lib/i18n/diccionario";
+import { obtenerIdioma } from "@/lib/i18n/server";
 
 export default async function NivelPage({
   params,
@@ -30,6 +31,7 @@ export default async function NivelPage({
   const progreso = user && supabase ? await getProgresoSecciones(supabase, user.id) : {};
   const usuario = supabase ? await getUsuarioActual(supabase) : null;
   const { esPremium } = calcularEstadoPremium(usuario);
+  const idioma = await obtenerIdioma();
 
   const completadas = secciones.filter((s) => progreso[s.id]?.pasado).length;
 
@@ -40,7 +42,7 @@ export default async function NivelPage({
         className="inline-flex items-center gap-1 text-sm font-semibold text-brand-blue"
       >
         <ArrowLeft className="h-4 w-4" aria-hidden="true" />
-        <TextoBilingue clave="todosLosNiveles" modo="en_linea" />
+        <Texto clave="todosLosNiveles" />
       </Link>
 
       <h1 className="mb-1 mt-2 text-2xl font-extrabold">{nivel.nombre}</h1>
@@ -50,10 +52,7 @@ export default async function NivelPage({
         <div className="mb-6 rounded-card bg-white p-4 shadow-soft">
           <div className="mb-2 flex items-baseline justify-between">
             <span className="text-sm font-bold">
-              {ui.tuProgresoEn.es} {nivel.codigo}{" "}
-              <span className="font-normal opacity-60">
-                ({ui.tuProgresoEn.ru} {nivel.codigo})
-              </span>
+              {ui.tuProgresoEn[idioma]} {nivel.codigo}
             </span>
             <span className="text-sm text-chigui-brown">
               {completadas} de {secciones.length}
@@ -117,9 +116,9 @@ export default async function NivelPage({
                   <p className="font-bold">{seccion.titulo}</p>
                   <p className="text-xs text-chigui-brown">
                     {seccion.es_intro ? (
-                      <TextoBilingue clave="introduccionDelNivel" modo="en_linea" />
+                      <Texto clave="introduccionDelNivel" />
                     ) : (
-                      <TextoBilingue clave="seccion" modo="en_linea" />
+                      <Texto clave="seccion" />
                     )}
                   </p>
                 </div>
@@ -131,7 +130,7 @@ export default async function NivelPage({
                 )}
                 {bloqueada && (
                   <span className="shrink-0 text-xs font-bold text-chigui-brown">
-                    <TextoBilingue clave="premium" modo="en_linea" />
+                    <Texto clave="premium" />
                   </span>
                 )}
               </Link>
@@ -145,10 +144,7 @@ export default async function NivelPage({
         className="mt-6 flex items-center justify-center gap-2 rounded-card bg-white p-4 text-center text-sm font-bold text-chigui-brown shadow-soft transition hover:-translate-y-0.5 hover:text-brand-green hover:shadow-soft-lg"
       >
         <ClipboardCheck className="h-4 w-4" aria-hidden="true" />
-        {ui.pruebaFinalDe.es} {nivel.codigo}{" "}
-        <span className="opacity-70">
-          ({ui.pruebaFinalDe.ru} {nivel.codigo})
-        </span>
+        {ui.pruebaFinalDe[idioma]} {nivel.codigo}
       </Link>
     </div>
   );

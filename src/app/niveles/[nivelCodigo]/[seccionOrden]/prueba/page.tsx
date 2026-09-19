@@ -13,8 +13,9 @@ import { resolverPerfilActivo } from "@/lib/perfil";
 import PruebaExercisePlayer from "@/components/exercises/PruebaExercisePlayer";
 import ContenidoBloqueado from "@/components/ContenidoBloqueado";
 import SelectorPerfil from "@/components/SelectorPerfil";
-import TextoBilingue from "@/components/ui/TextoBilingue";
+import Texto from "@/components/ui/Texto";
 import { ui } from "@/lib/i18n/diccionario";
+import { obtenerIdioma } from "@/lib/i18n/server";
 
 export default async function PruebaSeccionPage({
   params,
@@ -34,6 +35,7 @@ export default async function PruebaSeccionPage({
   const usuario = supabase ? await getUsuarioActual(supabase) : null;
   const { esPremium } = calcularEstadoPremium(usuario);
   const seccionBloqueada = !seccion.es_gratis && !esPremium;
+  const idioma = await obtenerIdioma();
 
   const enlaceVolver = (
     <Link
@@ -50,9 +52,9 @@ export default async function PruebaSeccionPage({
       <div>
         {enlaceVolver}
         <h1 className="mb-4 mt-2 text-2xl font-extrabold">
-          {ui.pruebaDeCierre.es}
+          {ui.pruebaDeCierre[idioma]}
         </h1>
-        <ContenidoBloqueado mensajeClave="mensajeSeccionPremium" />
+        <ContenidoBloqueado mensajeClave="mensajeSeccionPremium" idioma={idioma} />
       </div>
     );
   }
@@ -65,23 +67,18 @@ export default async function PruebaSeccionPage({
   return (
     <div>
       {enlaceVolver}
-      <h1 className="mb-1 mt-2 text-2xl font-extrabold">
-        {ui.pruebaDeCierre.es}{" "}
-        <span className="text-lg font-normal opacity-60">({ui.pruebaDeCierre.ru})</span>
-      </h1>
+      <h1 className="mb-1 mt-2 text-2xl font-extrabold">{ui.pruebaDeCierre[idioma]}</h1>
       <p className="mb-6 text-chigui-brown">
-        {ui.necesitas60.es} (&quot;{seccion.titulo}&quot;).
-        <br />
-        <span className="opacity-70">
-          {ui.necesitas60.ru} («{seccion.titulo}»).
-        </span>
+        {idioma === "es"
+          ? `${ui.necesitas60.es} ("${seccion.titulo}").`
+          : `${ui.necesitas60.ru} («${seccion.titulo}»).`}
       </p>
 
-      <SelectorPerfil perfilActivo={perfilActivo} />
+      <SelectorPerfil perfilActivo={perfilActivo} idioma={idioma} />
 
       {ejerciciosPerfil.length === 0 ? (
         <div className="rounded-card bg-white p-4 shadow-soft">
-          <TextoBilingue clave="sinEjerciciosPrueba" as="p" className="text-chigui-brown" />
+          <Texto clave="sinEjerciciosPrueba" as="p" className="text-chigui-brown" />
         </div>
       ) : (
         <PruebaExercisePlayer
