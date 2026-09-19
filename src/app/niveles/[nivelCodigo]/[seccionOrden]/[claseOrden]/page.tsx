@@ -8,6 +8,7 @@ import {
   getEjerciciosPorClase,
 } from "@/lib/data";
 import type { PerfilAlumno } from "@/types/content";
+import ExercisePlayer from "@/components/exercises/ExercisePlayer";
 
 const PERFILES: { valor: PerfilAlumno; etiqueta: string }[] = [
   { valor: "ninos", etiqueta: "Niños" },
@@ -85,23 +86,7 @@ export default async function ClasePage({
           Sin ejercicios de prueba para este perfil todavía.
         </p>
       ) : (
-        <ul className="flex flex-col gap-2">
-          {ejerciciosClase.map((ej) => (
-            <li
-              key={ej.id}
-              className="flex items-center justify-between rounded-xl2 border-2 border-chigui-tan bg-white p-3"
-            >
-              <span className="text-sm font-semibold capitalize">
-                {ej.tipo.replaceAll("_", " ")}
-              </span>
-              {ej.is_premium && (
-                <span className="rounded-full bg-chigui-brown-dark px-2 py-0.5 text-xs font-bold text-white">
-                  🔒 Premium
-                </span>
-              )}
-            </li>
-          ))}
-        </ul>
+        <ExercisePlayer key={`${clase.id}-${perfilActivo}`} ejercicios={ejerciciosClase} />
       )}
     </div>
   );
