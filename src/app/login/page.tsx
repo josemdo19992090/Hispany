@@ -49,12 +49,19 @@ export default function LoginPage() {
 
   return (
     <div className="mx-auto max-w-sm">
-      <div className="mb-6 flex justify-center gap-2">
+      <h1 className="mb-4 text-center text-xl font-extrabold">
+        {modo === "login" ? "¡Bienvenido de vuelta!" : "Crea tu cuenta gratis"}
+      </h1>
+
+      <div className="mb-6 flex rounded-full bg-chigui-cream p-1">
         <button
           type="button"
           onClick={() => setModo("login")}
-          className={`rounded-full px-4 py-1.5 text-sm font-bold transition ${
-            modo === "login" ? "bg-brand-green text-white" : "border-2 border-chigui-tan bg-white"
+          aria-pressed={modo === "login"}
+          className={`flex-1 rounded-full px-4 py-2 text-sm font-bold transition-all ${
+            modo === "login"
+              ? "bg-brand-green text-white shadow-sm"
+              : "text-chigui-brown hover:text-chigui-brown-dark"
           }`}
         >
           Iniciar sesión
@@ -62,17 +69,22 @@ export default function LoginPage() {
         <button
           type="button"
           onClick={() => setModo("registro")}
-          className={`rounded-full px-4 py-1.5 text-sm font-bold transition ${
+          aria-pressed={modo === "registro"}
+          className={`flex-1 rounded-full px-4 py-2 text-sm font-bold transition-all ${
             modo === "registro"
-              ? "bg-brand-green text-white"
-              : "border-2 border-chigui-tan bg-white"
+              ? "bg-brand-green text-white shadow-sm"
+              : "text-chigui-brown hover:text-chigui-brown-dark"
           }`}
         >
           Crear cuenta
         </button>
       </div>
 
-      <form onSubmit={enviar} className="flex flex-col gap-3 rounded-xl2 bg-white p-5 shadow-sm">
+      <form
+        key={modo}
+        onSubmit={enviar}
+        className="flex flex-col gap-3 rounded-xl2 bg-white p-5 shadow-sm"
+      >
         {modo === "registro" && (
           <label className="flex flex-col gap-1 text-sm font-semibold">
             Nombre

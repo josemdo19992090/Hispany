@@ -15,6 +15,7 @@ import OrdenarPalabras from "./OrdenarPalabras";
 import VerdaderoFalso from "./VerdaderoFalso";
 import EncontrarError from "./EncontrarError";
 import ContenidoBloqueado from "@/components/ContenidoBloqueado";
+import ReportarError from "./ReportarError";
 
 interface RespuestaRegistrada extends ResultadoEvaluacion {
   ejercicio: Ejercicio;
@@ -144,6 +145,8 @@ export default function ExercisePlayer({
         deshabilitado={resultadoActual !== null}
         onResponder={manejarRespuesta}
       />
+
+      <ReportarError key={ejercicioActual.id} ejercicioId={ejercicioActual.id} />
 
       {resultadoActual && (
         <div
