@@ -47,11 +47,23 @@ interface ContenedorEjercicio {
 export async function listarEjercicios(contenedor: ContenedorEjercicio): Promise<Ejercicio[]> {
   const supabase = createSupabaseBrowserClient();
   if (!supabase) return [];
-  let query = supabase.from("ejercicios").select("*").order("orden");
-  if (contenedor.claseId) query = query.eq("clase_id", contenedor.claseId);
-  if (contenedor.seccionId) query = query.eq("seccion_id", contenedor.seccionId);
-  if (contenedor.nivelId) query = query.eq("nivel_id", contenedor.nivelId);
-  const { data, error } = await query;
+
+  // Si el id viene vacío (p. ej. una sección sin clases todavía) no se debe
+  // devolver la tabla entera: significa que no hay contenedor seleccionado.
+  const id = contenedor.claseId || contenedor.seccionId || contenedor.nivelId;
+  if (!id) return [];
+
+  const columna = contenedor.claseId
+    ? "clase_id"
+    : contenedor.seccionId
+      ? "seccion_id"
+      : "nivel_id";
+
+  const { data, error } = await supabase
+    .from("ejercicios")
+    .select("*")
+    .eq(columna, id)
+    .order("orden");
   if (error) throw error;
   return data as Ejercicio[];
 }

@@ -28,6 +28,14 @@ export default async function HeaderAuth() {
 
   return (
     <div className="flex items-center gap-3 text-sm">
+      {usuario?.rol === "admin" && (
+        <Link
+          href="/admin"
+          className="rounded-full border-2 border-brand-blue px-3 py-1 text-xs font-bold text-brand-blue"
+        >
+          Admin
+        </Link>
+      )}
       {enTrial && diasRestantesTrial !== null && (
         <span className="rounded-full bg-brand-yellow px-3 py-1 text-xs font-bold text-chigui-brown-dark">
           🎁 {diasRestantesTrial} día{diasRestantesTrial === 1 ? "" : "s"} de prueba premium

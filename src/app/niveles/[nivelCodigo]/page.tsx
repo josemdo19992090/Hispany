@@ -37,7 +37,7 @@ export default async function NivelPage({
       <p className="mb-6 text-chigui-brown">{nivel.descripcion}</p>
 
       <ol className="flex flex-col gap-3">
-        {secciones.map((seccion, i) => {
+        {secciones.map((seccion) => {
           const bloqueada = !seccion.es_gratis && !esPremium;
           const prog = progreso[seccion.id];
           return (
@@ -49,7 +49,7 @@ export default async function NivelPage({
                 }`}
               >
                 <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-chigui-tan font-bold text-white">
-                  {seccion.es_intro ? "★" : i}
+                  {seccion.es_intro ? "★" : seccion.orden}
                 </span>
                 <div className="flex-1">
                   <p className="font-bold">

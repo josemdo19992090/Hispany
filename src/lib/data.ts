@@ -1,27 +1,33 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
-import { supabase, supabaseConfigurado } from "@/lib/supabase/client";
+import { createSupabaseServerClient } from "@/lib/supabase/server";
 import type { Clase, ClaseVersion, Ejercicio, Nivel, Seccion, Usuario } from "@/types/content";
 
-// Capa de acceso a datos: lee de Supabase. Lanza un error explícito si el
-// proyecto todavía no está conectado (ver .env.local.example).
-function requireSupabase() {
-  if (!supabaseConfigurado || !supabase) {
+// Capa de acceso a datos (solo servidor: Server Components, Route Handlers y
+// Server Actions).
+//
+// Usa el cliente CON la sesión del usuario, no la key anónima: el paywall vive
+// en las políticas RLS de Supabase (ver supabase/seguridad.sql), así que la
+// base de datos necesita saber quién está pidiendo el contenido para decidir
+// si le toca. Con la key anónima, un usuario premium no vería su contenido.
+async function requireSupabase(): Promise<SupabaseClient> {
+  const client = await createSupabaseServerClient();
+  if (!client) {
     throw new Error(
       "Supabase no está configurado. Define NEXT_PUBLIC_SUPABASE_URL y NEXT_PUBLIC_SUPABASE_ANON_KEY en .env.local."
     );
   }
-  return supabase;
+  return client;
 }
 
 export async function getNiveles(): Promise<Nivel[]> {
-  const db = requireSupabase();
+  const db = await requireSupabase();
   const { data, error } = await db.from("niveles").select("*").order("orden");
   if (error) throw error;
   return data as Nivel[];
 }
 
 export async function getNivelPorCodigo(codigo: string): Promise<Nivel | null> {
-  const db = requireSupabase();
+  const db = await requireSupabase();
   const { data, error } = await db
     .from("niveles")
     .select("*")
@@ -32,7 +38,7 @@ export async function getNivelPorCodigo(codigo: string): Promise<Nivel | null> {
 }
 
 export async function getSeccionesPorNivel(nivelId: string): Promise<Seccion[]> {
-  const db = requireSupabase();
+  const db = await requireSupabase();
   const { data, error } = await db
     .from("secciones")
     .select("*")
@@ -43,7 +49,7 @@ export async function getSeccionesPorNivel(nivelId: string): Promise<Seccion[]> 
 }
 
 export async function getClasesPorSeccion(seccionId: string): Promise<Clase[]> {
-  const db = requireSupabase();
+  const db = await requireSupabase();
   const { data, error } = await db
     .from("clases")
     .select("*")
@@ -57,7 +63,7 @@ export async function getVersionClase(
   claseId: string,
   perfil: string
 ): Promise<ClaseVersion | null> {
-  const db = requireSupabase();
+  const db = await requireSupabase();
   const { data, error } = await db
     .from("clase_versiones")
     .select("*")
@@ -69,7 +75,7 @@ export async function getVersionClase(
 }
 
 export async function getEjerciciosPorClase(claseId: string): Promise<Ejercicio[]> {
-  const db = requireSupabase();
+  const db = await requireSupabase();
   const { data, error } = await db
     .from("ejercicios")
     .select("*")
@@ -80,7 +86,7 @@ export async function getEjerciciosPorClase(claseId: string): Promise<Ejercicio[
 }
 
 export async function getEjerciciosPorSeccion(seccionId: string): Promise<Ejercicio[]> {
-  const db = requireSupabase();
+  const db = await requireSupabase();
   const { data, error } = await db
     .from("ejercicios")
     .select("*")
@@ -91,7 +97,7 @@ export async function getEjerciciosPorSeccion(seccionId: string): Promise<Ejerci
 }
 
 export async function getEjerciciosPorNivel(nivelId: string): Promise<Ejercicio[]> {
-  const db = requireSupabase();
+  const db = await requireSupabase();
   const { data, error } = await db
     .from("ejercicios")
     .select("*")

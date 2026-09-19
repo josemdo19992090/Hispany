@@ -13,11 +13,8 @@ import { calcularEstadoPremium } from "@/lib/premium";
 import type { PerfilAlumno } from "@/types/content";
 import ClaseExercisePlayer from "@/components/exercises/ClaseExercisePlayer";
 import ContenidoBloqueado from "@/components/ContenidoBloqueado";
-
-const PERFILES: { valor: PerfilAlumno; etiqueta: string }[] = [
-  { valor: "ninos", etiqueta: "Niños" },
-  { valor: "trabajo_viajes", etiqueta: "Trabajo / Viajes" },
-];
+import TextoConFormato from "@/components/TextoConFormato";
+import SelectorPerfil from "@/components/SelectorPerfil";
 
 export default async function ClasePage({
   params,
@@ -76,21 +73,7 @@ export default async function ClasePage({
       </Link>
       <h1 className="mb-4 mt-2 text-2xl font-extrabold">{clase.titulo}</h1>
 
-      <div className="mb-6 flex gap-2">
-        {PERFILES.map((p) => (
-          <Link
-            key={p.valor}
-            href={`?perfil=${p.valor}`}
-            className={`rounded-full px-4 py-1.5 text-sm font-bold transition ${
-              perfilActivo === p.valor
-                ? "bg-brand-green text-white"
-                : "bg-white text-chigui-brown border-2 border-chigui-tan"
-            }`}
-          >
-            {p.etiqueta}
-          </Link>
-        ))}
-      </div>
+      <SelectorPerfil perfilActivo={perfilActivo} />
 
       {!version ? (
         <p className="rounded-xl2 bg-white p-4 text-chigui-brown shadow-sm">
@@ -145,7 +128,7 @@ function Bloque({ titulo, texto }: { titulo: string; texto: string }) {
   return (
     <div className="rounded-xl2 bg-white p-4 shadow-sm">
       <p className="mb-1 font-bold">{titulo}</p>
-      <p className="text-sm text-chigui-brown">{texto}</p>
+      <TextoConFormato texto={texto} className="text-sm text-chigui-brown" />
     </div>
   );
 }

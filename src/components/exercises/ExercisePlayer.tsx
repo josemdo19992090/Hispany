@@ -135,12 +135,15 @@ export default function ExercisePlayer({
         <div className="h-2 w-full overflow-hidden rounded-full bg-chigui-cream">
           <div
             className="h-full rounded-full bg-brand-green transition-all"
-            style={{ width: `${(indice / ejercicios.length) * 100}%` }}
+            style={{ width: `${(historial.length / ejercicios.length) * 100}%` }}
           />
         </div>
       </div>
 
+      {/* El `key` es obligatorio: sin él, al pasar a otra pregunta DEL MISMO TIPO
+          React reutiliza el componente y se conserva la opción ya marcada. */}
       <RenderizadorEjercicio
+        key={ejercicioActual.id}
         ejercicio={ejercicioActual}
         deshabilitado={resultadoActual !== null}
         onResponder={manejarRespuesta}

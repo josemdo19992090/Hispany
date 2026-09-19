@@ -1,7 +1,18 @@
 "use client";
 
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import type { EjercicioContenido } from "@/types/content";
+
+// Hash simple y estable de una cadena. Se usa para desordenar las opciones de
+// forma determinista: si usáramos Math.random() el orden cambiaría en cada
+// render (y no coincidiría entre servidor y cliente al hidratar).
+function hashTexto(texto: string): number {
+  let h = 0;
+  for (let i = 0; i < texto.length; i++) {
+    h = (h * 31 + texto.charCodeAt(i)) | 0;
+  }
+  return h;
+}
 
 export default function Emparejar({
   contenido,
@@ -13,7 +24,16 @@ export default function Emparejar({
   onResponder: (respuesta: Record<string, string>) => void;
 }) {
   const [elegidos, setElegidos] = useState<Record<string, string>>({});
-  const opcionesDerecha = contenido.pares.map((p) => p.derecha);
+
+  // Sin desordenar, la opción correcta de la fila N era siempre la opción N de
+  // la lista, así que el ejercicio se resolvía sin saber la respuesta.
+  const opcionesDerecha = useMemo(
+    () =>
+      contenido.pares
+        .map((p) => p.derecha)
+        .sort((a, b) => hashTexto(a) - hashTexto(b)),
+    [contenido]
+  );
 
   const elegir = (izquierda: string, derecha: string) => {
     setElegidos((prev) => ({ ...prev, [izquierda]: derecha }));

@@ -11,6 +11,7 @@ import { calcularEstadoPremium } from "@/lib/premium";
 import type { PerfilAlumno } from "@/types/content";
 import PruebaExercisePlayer from "@/components/exercises/PruebaExercisePlayer";
 import ContenidoBloqueado from "@/components/ContenidoBloqueado";
+import SelectorPerfil from "@/components/SelectorPerfil";
 
 export default async function PruebaSeccionPage({
   params,
@@ -65,6 +66,8 @@ export default async function PruebaSeccionPage({
         Mezcla las 4 clases de &quot;{seccion.titulo}&quot;. Necesitas 60% o más para que el
         intento cuente para tu rango.
       </p>
+
+      <SelectorPerfil perfilActivo={perfilActivo} />
 
       {ejerciciosPerfil.length === 0 ? (
         <p className="rounded-xl2 bg-white p-4 text-chigui-brown shadow-sm">
