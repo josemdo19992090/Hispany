@@ -8,7 +8,7 @@ import {
   getEjerciciosPorClase,
 } from "@/lib/data";
 import type { PerfilAlumno } from "@/types/content";
-import ExercisePlayer from "@/components/exercises/ExercisePlayer";
+import ClaseExercisePlayer from "@/components/exercises/ClaseExercisePlayer";
 
 const PERFILES: { valor: PerfilAlumno; etiqueta: string }[] = [
   { valor: "ninos", etiqueta: "Niños" },
@@ -86,7 +86,12 @@ export default async function ClasePage({
           Sin ejercicios de prueba para este perfil todavía.
         </p>
       ) : (
-        <ExercisePlayer key={`${clase.id}-${perfilActivo}`} ejercicios={ejerciciosClase} />
+        <ClaseExercisePlayer
+          key={`${clase.id}-${perfilActivo}`}
+          claseId={clase.id}
+          seccionId={seccion.id}
+          ejercicios={ejerciciosClase}
+        />
       )}
     </div>
   );

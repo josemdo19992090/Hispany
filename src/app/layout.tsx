@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import localFont from "next/font/local";
 import Link from "next/link";
 import ChiguiMascot from "@/components/ChiguiMascot";
+import HeaderAuth from "@/components/HeaderAuth";
 import "./globals.css";
 
 const geistSans = localFont({
@@ -45,6 +46,7 @@ export default function RootLayout({
             <span className="ml-auto h-2 w-10 rounded-full bg-brand-yellow" />
             <span className="h-2 w-10 rounded-full bg-brand-blue" />
             <span className="h-2 w-10 rounded-full bg-brand-red" />
+            <HeaderAuth />
           </div>
         </header>
         <main className="mx-auto max-w-3xl px-4 py-6">{children}</main>

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import type { Ejercicio } from "@/types/content";
 import {
   ETIQUETA_TIPO_EJERCICIO,
@@ -19,7 +19,19 @@ interface RespuestaRegistrada extends ResultadoEvaluacion {
   ejercicio: Ejercicio;
 }
 
-export default function ExercisePlayer({ ejercicios }: { ejercicios: Ejercicio[] }) {
+interface ResumenFinal {
+  correctas: number;
+  total: number;
+  porcentaje: number;
+}
+
+export default function ExercisePlayer({
+  ejercicios,
+  onTerminar,
+}: {
+  ejercicios: Ejercicio[];
+  onTerminar?: (resumen: ResumenFinal) => void;
+}) {
   const [indice, setIndice] = useState(0);
   const [resultadoActual, setResultadoActual] = useState<ResultadoEvaluacion | null>(null);
   const [historial, setHistorial] = useState<RespuestaRegistrada[]>([]);
@@ -48,6 +60,15 @@ export default function ExercisePlayer({ ejercicios }: { ejercicios: Ejercicio[]
     setHistorial([]);
     setTerminado(false);
   };
+
+  useEffect(() => {
+    if (!terminado) return;
+    const correctas = historial.filter((h) => h.correcta).length;
+    const total = historial.length;
+    onTerminar?.({ correctas, total, porcentaje: correctas / total });
+    // Solo debe dispararse una vez al llegar al resumen, no en cada re-render.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [terminado]);
 
   if (terminado) {
     const correctas = historial.filter((h) => h.correcta).length;

@@ -1,3 +1,4 @@
+import type { SupabaseClient } from "@supabase/supabase-js";
 import { supabase, supabaseConfigurado } from "@/lib/supabase/client";
 import type { Clase, ClaseVersion, Ejercicio, Nivel, Seccion } from "@/types/content";
 
@@ -76,4 +77,75 @@ export async function getEjerciciosPorClase(claseId: string): Promise<Ejercicio[
     .order("orden");
   if (error) throw error;
   return data as Ejercicio[];
+}
+
+export async function getEjerciciosPorSeccion(seccionId: string): Promise<Ejercicio[]> {
+  const db = requireSupabase();
+  const { data, error } = await db
+    .from("ejercicios")
+    .select("*")
+    .eq("seccion_id", seccionId)
+    .order("orden");
+  if (error) throw error;
+  return data as Ejercicio[];
+}
+
+export async function getEjerciciosPorNivel(nivelId: string): Promise<Ejercicio[]> {
+  const db = requireSupabase();
+  const { data, error } = await db
+    .from("ejercicios")
+    .select("*")
+    .eq("nivel_id", nivelId)
+    .order("orden");
+  if (error) throw error;
+  return data as Ejercicio[];
+}
+
+// Estas dos funciones leen tablas protegidas por RLS (auth.uid() = usuario_id),
+// así que necesitan el cliente de Supabase autenticado de la request (con la
+// cookie de sesión), no el cliente público anónimo que usa el resto de este
+// archivo. El caller (un Server Component) lo obtiene con
+// `createSupabaseServerClient()` y lo pasa aquí.
+export async function getClasesCompletadas(
+  authedClient: SupabaseClient,
+  usuarioId: string,
+  seccionId: string
+): Promise<Set<string>> {
+  const clasesSeccion = await getClasesPorSeccion(seccionId);
+  const idsClases = clasesSeccion.map((c) => c.id);
+  if (idsClases.length === 0) return new Set();
+  const { data, error } = await authedClient
+    .from("progreso_clases")
+    .select("clase_id")
+    .eq("usuario_id", usuarioId)
+    .eq("completada", true)
+    .in("clase_id", idsClases);
+  if (error) throw error;
+  return new Set((data ?? []).map((d) => d.clase_id));
+}
+
+export interface ProgresoSeccionResumen {
+  pasado: boolean;
+  rango: number;
+  repeticiones_aprobadas: number;
+}
+
+export async function getProgresoSecciones(
+  authedClient: SupabaseClient,
+  usuarioId: string
+): Promise<Record<string, ProgresoSeccionResumen>> {
+  const { data, error } = await authedClient
+    .from("progreso_secciones")
+    .select("seccion_id, pasado, rango, repeticiones_aprobadas")
+    .eq("usuario_id", usuarioId);
+  if (error) throw error;
+  const mapa: Record<string, ProgresoSeccionResumen> = {};
+  for (const fila of data ?? []) {
+    mapa[fila.seccion_id] = {
+      pasado: fila.pasado,
+      rango: fila.rango,
+      repeticiones_aprobadas: fila.repeticiones_aprobadas,
+    };
+  }
+  return mapa;
 }
