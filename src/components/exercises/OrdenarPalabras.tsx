@@ -3,6 +3,8 @@
 import { useState } from "react";
 import type { EjercicioContenido } from "@/types/content";
 import Boton from "@/components/ui/Boton";
+import TextoBilingue from "@/components/ui/TextoBilingue";
+import { ui } from "@/lib/i18n/diccionario";
 
 export default function OrdenarPalabras({
   contenido,
@@ -25,11 +27,14 @@ export default function OrdenarPalabras({
 
   return (
     <div>
-      <p className="mb-4 text-lg font-bold">Ordena las palabras para formar la frase.</p>
+      <p className="mb-4 text-lg font-bold">
+        {ui.ordenaLasPalabras.es}{" "}
+        <span className="font-normal opacity-60">({ui.ordenaLasPalabras.ru})</span>
+      </p>
 
       <div className="mb-4 flex min-h-[4rem] flex-wrap content-start gap-2 rounded-field bg-chigui-cream p-3">
         {orden.length === 0 && (
-          <span className="text-sm text-chigui-brown">Toca las palabras en orden...</span>
+          <span className="text-sm text-chigui-brown">{ui.tocaEnOrden.es}</span>
         )}
         {orden.map((i, posicion) => (
           <button
@@ -63,7 +68,7 @@ export default function OrdenarPalabras({
         disabled={orden.length !== contenido.palabras.length || deshabilitado}
         onClick={() => onResponder(orden)}
       >
-        Comprobar
+        <TextoBilingue clave="comprobar" modo="en_linea" />
       </Boton>
     </div>
   );

@@ -97,12 +97,3 @@ export function evaluarEjercicio(
     }
   }
 }
-
-export const ETIQUETA_TIPO_EJERCICIO: Record<Ejercicio["tipo"], string> = {
-  opcion_multiple: "Opción múltiple",
-  completar_espacio: "Completar el espacio",
-  emparejar: "Emparejar",
-  ordenar_palabras: "Ordenar palabras",
-  verdadero_falso: "Verdadero o falso",
-  encontrar_error: "Encontrar el error",
-};

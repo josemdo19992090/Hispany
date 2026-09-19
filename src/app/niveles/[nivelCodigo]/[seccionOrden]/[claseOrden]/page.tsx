@@ -26,6 +26,8 @@ import ContenidoBloqueado from "@/components/ContenidoBloqueado";
 import TextoConFormato from "@/components/TextoConFormato";
 import SelectorPerfil from "@/components/SelectorPerfil";
 import ChiguiMascot from "@/components/ChiguiMascot";
+import TextoBilingue from "@/components/ui/TextoBilingue";
+import { ui, type ClaveUI } from "@/lib/i18n/diccionario";
 
 export default async function ClasePage({
   params,
@@ -55,12 +57,13 @@ export default async function ClasePage({
       <div>
         <Link
           href={`/niveles/${nivel.codigo}/${seccion.orden}`}
-          className="text-sm font-semibold text-brand-blue"
+          className="inline-flex items-center gap-1 text-sm font-semibold text-brand-blue"
         >
-          &larr; {seccion.titulo}
+          <ArrowLeft className="h-4 w-4" aria-hidden="true" />
+          {seccion.titulo}
         </Link>
         <h1 className="mb-4 mt-2 text-2xl font-extrabold">{clase.titulo}</h1>
-        <ContenidoBloqueado mensaje="Esta sección es premium. La primera sección de cada nivel es gratis; el resto se desbloquea con una cuenta premium." />
+        <ContenidoBloqueado mensajeClave="mensajeSeccionPremium" />
       </div>
     );
   }
@@ -90,20 +93,18 @@ export default async function ClasePage({
       {!version ? (
         <div className="rounded-card bg-white p-6 text-center shadow-soft">
           <ChiguiMascot className="mx-auto mb-3 h-20 w-20" pose="durmiendo" />
-          <p className="text-chigui-brown">
-            Todavía no hay contenido para el perfil seleccionado en esta clase.
-          </p>
+          <TextoBilingue clave="sinContenidoPerfil" as="p" className="text-chigui-brown" />
         </div>
       ) : (
         <div className="flex flex-col gap-4">
-          <Bloque icono={<BookOpen />} titulo="Lectura" texto={version.lectura_md} />
+          <Bloque icono={<BookOpen />} claveTitulo="lectura" texto={version.lectura_md} />
           <Bloque
             icono={<MessagesSquare />}
-            titulo="Conversación"
+            claveTitulo="conversacion"
             texto={version.conversacion_md}
           />
-          <Bloque icono={<GraduationCap />} titulo="Gramática" texto={version.gramatica_md} />
-          <Bloque icono={<PenLine />} titulo="Escritura" texto={version.escritura_md} />
+          <Bloque icono={<GraduationCap />} claveTitulo="gramatica" texto={version.gramatica_md} />
+          <Bloque icono={<PenLine />} claveTitulo="escritura" texto={version.escritura_md} />
 
           {esPremium ? (
             <a
@@ -111,21 +112,23 @@ export default async function ClasePage({
               className="flex items-center justify-center gap-2 rounded-card bg-white p-4 text-center text-sm font-bold text-brand-blue shadow-soft transition hover:-translate-y-0.5 hover:shadow-soft-lg"
             >
               <FileDown className="h-4 w-4" aria-hidden="true" />
-              Descargar PDF de explicaciones
+              <TextoBilingue clave="descargarPDF" modo="en_linea" />
             </a>
           ) : (
-            <ContenidoBloqueado mensaje="El PDF de explicaciones se genera al vuelo y es una función premium." />
+            <ContenidoBloqueado mensajeClave="mensajePdfPremium" />
           )}
         </div>
       )}
 
-      <h2 className="mb-3 mt-8 text-lg font-bold">Ejercicios de comprobación</h2>
+      <TextoBilingue
+        clave="ejerciciosDeComprobacion"
+        as="h2"
+        className="mb-3 mt-8 text-lg font-bold"
+      />
       {ejerciciosJugables.length === 0 ? (
         <div className="rounded-card bg-white p-6 text-center shadow-soft">
           <ChiguiMascot className="mx-auto mb-3 h-20 w-20" pose="durmiendo" />
-          <p className="text-chigui-brown">
-            Aún no hay ejercicios para este perfil.
-          </p>
+          <TextoBilingue clave="sinEjerciciosPerfil" as="p" className="text-chigui-brown" />
         </div>
       ) : (
         <ClaseExercisePlayer
@@ -137,10 +140,15 @@ export default async function ClasePage({
       )}
 
       {cantidadBloqueados > 0 && (
-        <p className="mt-4 flex items-center justify-center gap-2 rounded-card bg-white/60 p-3 text-center text-sm text-chigui-brown ring-1 ring-chigui-tan/40">
-          <Lock className="h-4 w-4 shrink-0" aria-hidden="true" />
-          {cantidadBloqueados} variante{cantidadBloqueados > 1 ? "s" : ""} extra premium para
-          practicar más
+        <p className="mt-4 flex flex-col items-center gap-1 rounded-card bg-white/60 p-3 text-center text-sm text-chigui-brown ring-1 ring-chigui-tan/40">
+          <span className="flex items-center gap-2">
+            <Lock className="h-4 w-4 shrink-0" aria-hidden="true" />
+            {cantidadBloqueados} variante{cantidadBloqueados > 1 ? "s" : ""} extra premium para
+            practicar más
+          </span>
+          <span className="text-xs opacity-70">
+            Ещё {cantidadBloqueados} упражнени{cantidadBloqueados > 1 ? "й" : "е"} в премиум
+          </span>
         </p>
       )}
     </div>
@@ -149,20 +157,21 @@ export default async function ClasePage({
 
 function Bloque({
   icono,
-  titulo,
+  claveTitulo,
   texto,
 }: {
   icono: ReactNode;
-  titulo: string;
+  claveTitulo: ClaveUI;
   texto: string;
 }) {
+  const titulo = ui[claveTitulo];
   return (
     <div className="rounded-card bg-white p-5 shadow-soft">
       <p className="mb-2 flex items-center gap-2 font-bold">
         <span className="flex h-8 w-8 items-center justify-center rounded-full bg-chigui-cream text-brand-green [&>svg]:h-4 [&>svg]:w-4">
           {icono}
         </span>
-        {titulo}
+        {titulo.es} <span className="font-normal opacity-60">({titulo.ru})</span>
       </p>
       <TextoConFormato texto={texto} className="text-chigui-brown" />
     </div>

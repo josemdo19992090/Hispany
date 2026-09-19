@@ -3,11 +3,12 @@
 import { useEffect, useState } from "react";
 import type { Ejercicio } from "@/types/content";
 import {
-  ETIQUETA_TIPO_EJERCICIO,
   evaluarEjercicio,
   type RespuestaUsuario,
   type ResultadoEvaluacion,
 } from "@/lib/exercises";
+import { ui, etiquetaTipoEjercicio } from "@/lib/i18n/diccionario";
+import TextoBilingue from "@/components/ui/TextoBilingue";
 import OpcionMultiple from "./OpcionMultiple";
 import CompletarEspacio from "./CompletarEspacio";
 import Emparejar from "./Emparejar";
@@ -92,11 +93,17 @@ export default function ExercisePlayer({
             className="mb-3 h-24 w-24"
             pose={aprobado ? "celebrando" : "animando"}
           />
-          <h3 className="text-xl font-extrabold">
-            {aprobado ? "¡Bien hecho!" : "Sigue practicando"}
-          </h3>
+          <TextoBilingue
+            clave={aprobado ? "bienHecho" : "sigueRracticando"}
+            as="h3"
+            className="text-xl font-extrabold"
+          />
           <p className="mt-1 text-chigui-brown">
-            Acertaste {correctas} de {total}
+            {ui.acertaste.es} {correctas} {ui.de.es} {total}
+            <br />
+            <span className="text-sm opacity-70">
+              {ui.acertaste.ru} {correctas} {ui.de.ru} {total}
+            </span>
           </p>
 
           <div className="mt-4 w-full max-w-xs">
@@ -114,12 +121,15 @@ export default function ExercisePlayer({
 
         {errores.length > 0 && mostrarErroresDetallados && (
           <div className="mt-6">
-            <p className="mb-2 font-bold">Revisa tus errores</p>
+            <TextoBilingue clave="revisaTusErrores" as="p" className="mb-2 font-bold" />
             <ul className="flex flex-col gap-2">
               {errores.map((e, i) => (
                 <li key={i} className="rounded-field bg-chigui-cream p-3 text-sm">
                   <p className="mb-1 font-bold">
-                    {ETIQUETA_TIPO_EJERCICIO[e.ejercicio.tipo]}
+                    {etiquetaTipoEjercicio[e.ejercicio.tipo].es}{" "}
+                    <span className="font-normal opacity-60">
+                      ({etiquetaTipoEjercicio[e.ejercicio.tipo].ru})
+                    </span>
                   </p>
                   <p className="flex items-start gap-1.5 text-brand-red">
                     <X className="mt-0.5 h-4 w-4 shrink-0" aria-hidden="true" />
@@ -137,14 +147,14 @@ export default function ExercisePlayer({
 
         {errores.length > 0 && !mostrarErroresDetallados && (
           <div className="mt-6">
-            <ContenidoBloqueado mensaje="El detalle de tus errores con las respuestas correctas es una función premium." />
+            <ContenidoBloqueado mensajeClave="mensajeErroresPremium" />
           </div>
         )}
 
         <div className="mt-6 flex justify-center">
           <Boton onClick={reiniciar}>
             <RotateCcw className="h-4 w-4" aria-hidden="true" />
-            Reintentar
+            <TextoBilingue clave="reintentar" modo="en_linea" />
           </Boton>
         </div>
       </div>
@@ -156,9 +166,12 @@ export default function ExercisePlayer({
       <div className="mb-5">
         <div className="mb-1.5 flex items-center justify-between text-xs font-bold text-chigui-brown">
           <span>
-            Pregunta {indice + 1} de {ejercicios.length}
+            {ui.pregunta.es} {indice + 1} {ui.de.es} {ejercicios.length}{" "}
+            <span className="font-normal opacity-60">
+              ({ui.pregunta.ru} {indice + 1} {ui.de.ru} {ejercicios.length})
+            </span>
           </span>
-          <span>{ETIQUETA_TIPO_EJERCICIO[ejercicioActual.tipo]}</span>
+          <span>{etiquetaTipoEjercicio[ejercicioActual.tipo].es}</span>
         </div>
         <div
           className="h-2.5 w-full overflow-hidden rounded-full bg-chigui-cream"
@@ -213,17 +226,21 @@ export default function ExercisePlayer({
               >
                 {resultadoActual.correcta ? (
                   <>
-                    <Check className="h-5 w-5" aria-hidden="true" /> ¡Correcto!
+                    <Check className="h-5 w-5" aria-hidden="true" />
+                    {ui.correcto.es}{" "}
+                    <span className="font-normal opacity-60">({ui.correcto.ru})</span>
                   </>
                 ) : (
                   <>
-                    <X className="h-5 w-5" aria-hidden="true" /> Casi
+                    <X className="h-5 w-5" aria-hidden="true" />
+                    {ui.casi.es}{" "}
+                    <span className="font-normal opacity-60">({ui.casi.ru})</span>
                   </>
                 )}
               </p>
               {!resultadoActual.correcta && (
                 <p className="text-sm text-chigui-brown-dark">
-                  Respuesta correcta:{" "}
+                  {ui.respuestaCorrecta.es}:{" "}
                   <strong>{resultadoActual.respuestaCorrectaTexto}</strong>
                 </p>
               )}
@@ -232,7 +249,10 @@ export default function ExercisePlayer({
 
           <div className="mt-3 flex justify-end">
             <Boton onClick={siguiente}>
-              {indice + 1 < ejercicios.length ? "Siguiente" : "Ver resumen"}
+              <TextoBilingue
+                clave={indice + 1 < ejercicios.length ? "siguiente" : "verResumen"}
+                modo="en_linea"
+              />
               <ArrowRight className="h-4 w-4" aria-hidden="true" />
             </Boton>
           </div>

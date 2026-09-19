@@ -3,7 +3,11 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { ArrowLeft } from "lucide-react";
 import { createSupabaseBrowserClient } from "@/lib/supabase/browser";
+import Boton from "@/components/ui/Boton";
+import TextoBilingue from "@/components/ui/TextoBilingue";
+import { ui } from "@/lib/i18n/diccionario";
 
 export default function LoginPage() {
   const [modo, setModo] = useState<"login" | "registro">("login");
@@ -27,7 +31,7 @@ export default function LoginPage() {
     if (modo === "login") {
       const { error } = await supabase.auth.signInWithPassword({ email, password });
       if (error) {
-        setError("Correo o contraseña incorrectos.");
+        setError("Correo o contraseña incorrectos (неверная почта или пароль)");
       } else {
         router.push("/");
         router.refresh();
@@ -50,21 +54,23 @@ export default function LoginPage() {
   return (
     <div className="mx-auto max-w-sm">
       <h1 className="mb-4 text-center text-xl font-extrabold">
-        {modo === "login" ? "¡Bienvenido de vuelta!" : "Crea tu cuenta gratis"}
+        <TextoBilingue
+          clave={modo === "login" ? "bienvenidoDeVuelta" : "creaTuCuentaGratis"}
+        />
       </h1>
 
-      <div className="mb-6 flex rounded-full bg-chigui-cream p-1">
+      <div className="mb-6 flex rounded-full bg-white p-1 shadow-soft">
         <button
           type="button"
           onClick={() => setModo("login")}
           aria-pressed={modo === "login"}
           className={`flex-1 rounded-full px-4 py-2 text-sm font-bold transition-all ${
             modo === "login"
-              ? "bg-brand-green text-white shadow-sm"
+              ? "bg-brand-green text-white"
               : "text-chigui-brown hover:text-chigui-brown-dark"
           }`}
         >
-          Iniciar sesión
+          <TextoBilingue clave="iniciarSesion" modo="en_linea" />
         </button>
         <button
           type="button"
@@ -72,70 +78,78 @@ export default function LoginPage() {
           aria-pressed={modo === "registro"}
           className={`flex-1 rounded-full px-4 py-2 text-sm font-bold transition-all ${
             modo === "registro"
-              ? "bg-brand-green text-white shadow-sm"
+              ? "bg-brand-green text-white"
               : "text-chigui-brown hover:text-chigui-brown-dark"
           }`}
         >
-          Crear cuenta
+          <TextoBilingue clave="crearCuenta" modo="en_linea" />
         </button>
       </div>
 
       <form
         key={modo}
         onSubmit={enviar}
-        className="flex flex-col gap-3 rounded-xl2 bg-white p-5 shadow-sm"
+        className="flex flex-col gap-3 rounded-card bg-white p-5 shadow-soft"
       >
         {modo === "registro" && (
           <label className="flex flex-col gap-1 text-sm font-semibold">
-            Nombre
+            <TextoBilingue clave="nombre" modo="en_linea" />
             <input
               type="text"
               value={nombre}
               onChange={(e) => setNombre(e.target.value)}
-              className="rounded-lg border-2 border-chigui-tan px-3 py-2 font-normal focus:border-brand-green focus:outline-none"
+              className="rounded-field bg-chigui-cream px-3 py-2 font-normal text-chigui-brown-dark"
             />
           </label>
         )}
         <label className="flex flex-col gap-1 text-sm font-semibold">
-          Correo
+          <TextoBilingue clave="correo" modo="en_linea" />
           <input
             type="email"
             required
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            className="rounded-lg border-2 border-chigui-tan px-3 py-2 font-normal focus:border-brand-green focus:outline-none"
+            className="rounded-field bg-chigui-cream px-3 py-2 font-normal text-chigui-brown-dark"
           />
         </label>
         <label className="flex flex-col gap-1 text-sm font-semibold">
-          Contraseña
+          <TextoBilingue clave="contrasena" modo="en_linea" />
           <input
             type="password"
             required
             minLength={6}
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            className="rounded-lg border-2 border-chigui-tan px-3 py-2 font-normal focus:border-brand-green focus:outline-none"
+            className="rounded-field bg-chigui-cream px-3 py-2 font-normal text-chigui-brown-dark"
           />
         </label>
 
-        {error && <p className="text-sm text-red-700">{error}</p>}
+        {error && <p className="text-sm text-brand-red">{error}</p>}
         {avisoRegistro && (
           <p className="text-sm text-brand-green">
-            ¡Cuenta creada! Revisa tu correo para confirmarla y luego inicia sesión.
+            ¡Cuenta creada! Revisa tu correo para confirmarla.
+            <br />
+            <span className="opacity-70">
+              (Аккаунт создан! Проверь почту и подтверди его.)
+            </span>
           </p>
         )}
 
-        <button
-          type="submit"
-          disabled={cargando}
-          className="mt-2 rounded-full bg-brand-green px-6 py-2 font-bold text-white disabled:opacity-50"
-        >
-          {modo === "login" ? "Entrar" : "Crear cuenta"}
-        </button>
+        <Boton type="submit" disabled={cargando} className="mt-2">
+          <TextoBilingue
+            clave={modo === "login" ? "entrar" : "crearCuenta"}
+            modo="en_linea"
+          />
+        </Boton>
       </form>
 
-      <Link href="/" className="mt-4 block text-center text-sm font-semibold text-brand-blue">
-        &larr; Seguir explorando sin cuenta
+      <Link
+        href="/"
+        className="mt-4 flex items-center justify-center gap-1 text-center text-sm font-semibold text-brand-blue"
+      >
+        <ArrowLeft className="h-4 w-4" aria-hidden="true" />
+        {ui.seguirSinCuenta.es}{" "}
+        <span className="opacity-70">({ui.seguirSinCuenta.ru})</span>
       </Link>
     </div>
   );

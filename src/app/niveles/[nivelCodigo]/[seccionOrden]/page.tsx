@@ -12,6 +12,7 @@ import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { calcularEstadoPremium } from "@/lib/premium";
 import ContenidoBloqueado from "@/components/ContenidoBloqueado";
 import ChiguiMascot from "@/components/ChiguiMascot";
+import TextoBilingue from "@/components/ui/TextoBilingue";
 
 export default async function SeccionPage({
   params,
@@ -54,9 +55,7 @@ export default async function SeccionPage({
       {clasesDeSeccion.length === 0 ? (
         <div className="rounded-card bg-white p-6 text-center shadow-soft">
           <ChiguiMascot className="mx-auto mb-3 h-20 w-20" pose="durmiendo" />
-          <p className="text-chigui-brown">
-            Esta sección todavía no tiene clases cargadas.
-          </p>
+          <TextoBilingue clave="sinClasesTodavia" as="p" className="text-chigui-brown" />
         </div>
       ) : (
         <ol className="flex flex-col gap-3">
@@ -99,7 +98,7 @@ export default async function SeccionPage({
 
       {bloqueada && (
         <div className="mt-4">
-          <ContenidoBloqueado mensaje="Esta sección es premium. La primera sección de cada nivel es gratis; el resto se desbloquea con una cuenta premium." />
+          <ContenidoBloqueado mensajeClave="mensajeSeccionPremium" />
         </div>
       )}
 
@@ -109,7 +108,7 @@ export default async function SeccionPage({
           className="mt-6 flex items-center justify-center gap-2 rounded-card bg-white p-4 text-center text-sm font-bold text-chigui-brown shadow-soft transition hover:-translate-y-0.5 hover:text-brand-green hover:shadow-soft-lg"
         >
           <ClipboardCheck className="h-4 w-4" aria-hidden="true" />
-          Prueba de cierre de sección
+          <TextoBilingue clave="pruebaDeCierre" modo="en_linea" />
         </Link>
       )}
     </div>

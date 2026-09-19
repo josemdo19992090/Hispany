@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { ArrowLeft } from "lucide-react";
 import { getNivelPorCodigo, getEjerciciosPorNivel, getUsuarioActual } from "@/lib/data";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { calcularEstadoPremium } from "@/lib/premium";
@@ -7,6 +8,8 @@ import type { PerfilAlumno } from "@/types/content";
 import PruebaExercisePlayer from "@/components/exercises/PruebaExercisePlayer";
 import ContenidoBloqueado from "@/components/ContenidoBloqueado";
 import SelectorPerfil from "@/components/SelectorPerfil";
+import TextoBilingue from "@/components/ui/TextoBilingue";
+import { ui } from "@/lib/i18n/diccionario";
 
 export default async function PruebaFinalNivelPage({
   params,
@@ -24,10 +27,14 @@ export default async function PruebaFinalNivelPage({
 
   const encabezado = (
     <>
-      <Link href={`/niveles/${nivel.codigo}`} className="text-sm font-semibold text-brand-blue">
-        &larr; {nivel.nombre}
+      <Link
+        href={`/niveles/${nivel.codigo}`}
+        className="inline-flex items-center gap-1 text-sm font-semibold text-brand-blue"
+      >
+        <ArrowLeft className="h-4 w-4" aria-hidden="true" />
+        {nivel.nombre}
       </Link>
-      <h1 className="mb-1 mt-2 text-2xl font-extrabold">Prueba final de nivel</h1>
+      <h1 className="mb-1 mt-2 text-2xl font-extrabold">{ui.pruebaFinalTitulo.es}</h1>
     </>
   );
 
@@ -37,8 +44,10 @@ export default async function PruebaFinalNivelPage({
     return (
       <div>
         {encabezado}
-        <p className="mb-6 text-chigui-brown">Mezcla todas las secciones de {nivel.nombre}.</p>
-        <ContenidoBloqueado mensaje="La prueba final de nivel repasa todas las secciones, incluidas las premium, así que forma parte del contenido premium." />
+        <p className="mb-6 text-chigui-brown">
+          {ui.mezclaTodasLasSecciones.es} ({nivel.nombre}).
+        </p>
+        <ContenidoBloqueado mensajeClave="mensajePruebaFinalPremium" />
       </div>
     );
   }
@@ -53,15 +62,19 @@ export default async function PruebaFinalNivelPage({
     <div>
       {encabezado}
       <p className="mb-6 text-chigui-brown">
-        Mezcla todas las secciones de {nivel.nombre}. Necesitas 60% o más para aprobar.
+        {ui.mezclaTodasLasSecciones.es} ({nivel.nombre}). {ui.necesitas60Aprobar.es}.
+        <br />
+        <span className="opacity-70">
+          {ui.mezclaTodasLasSecciones.ru} ({nivel.nombre}). {ui.necesitas60Aprobar.ru}.
+        </span>
       </p>
 
       <SelectorPerfil perfilActivo={perfilActivo} />
 
       {ejerciciosPerfil.length === 0 ? (
-        <p className="rounded-xl2 bg-white p-4 text-chigui-brown shadow-sm">
-          Todavía no hay ejercicios de prueba final cargados para este nivel.
-        </p>
+        <div className="rounded-card bg-white p-4 shadow-soft">
+          <TextoBilingue clave="sinEjerciciosPrueba" as="p" className="text-chigui-brown" />
+        </div>
       ) : (
         <PruebaExercisePlayer
           key={`${nivel.id}-${perfilActivo}`}

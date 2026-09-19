@@ -1,9 +1,10 @@
 import Link from "next/link";
 import type { PerfilAlumno } from "@/types/content";
+import { ui } from "@/lib/i18n/diccionario";
 
-export const PERFILES: { valor: PerfilAlumno; etiqueta: string }[] = [
-  { valor: "ninos", etiqueta: "Niños" },
-  { valor: "trabajo_viajes", etiqueta: "Trabajo / Viajes" },
+export const PERFILES: { valor: PerfilAlumno; clave: "perfilNinos" | "perfilTrabajoViajes" }[] = [
+  { valor: "ninos", clave: "perfilNinos" },
+  { valor: "trabajo_viajes", clave: "perfilTrabajoViajes" },
 ];
 
 export default function SelectorPerfil({ perfilActivo }: { perfilActivo: PerfilAlumno }) {
@@ -20,7 +21,8 @@ export default function SelectorPerfil({ perfilActivo }: { perfilActivo: PerfilA
               : "text-chigui-brown hover:text-chigui-brown-dark"
           }`}
         >
-          {p.etiqueta}
+          {ui[p.clave].es}{" "}
+          <span className="font-normal opacity-70">({ui[p.clave].ru})</span>
         </Link>
       ))}
     </div>

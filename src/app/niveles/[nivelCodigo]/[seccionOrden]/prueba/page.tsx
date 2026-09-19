@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { ArrowLeft } from "lucide-react";
 import {
   getNivelPorCodigo,
   getSeccionesPorNivel,
@@ -12,6 +13,8 @@ import type { PerfilAlumno } from "@/types/content";
 import PruebaExercisePlayer from "@/components/exercises/PruebaExercisePlayer";
 import ContenidoBloqueado from "@/components/ContenidoBloqueado";
 import SelectorPerfil from "@/components/SelectorPerfil";
+import TextoBilingue from "@/components/ui/TextoBilingue";
+import { ui } from "@/lib/i18n/diccionario";
 
 export default async function PruebaSeccionPage({
   params,
@@ -32,17 +35,24 @@ export default async function PruebaSeccionPage({
   const { esPremium } = calcularEstadoPremium(usuario);
   const seccionBloqueada = !seccion.es_gratis && !esPremium;
 
+  const enlaceVolver = (
+    <Link
+      href={`/niveles/${nivel.codigo}/${seccion.orden}`}
+      className="inline-flex items-center gap-1 text-sm font-semibold text-brand-blue"
+    >
+      <ArrowLeft className="h-4 w-4" aria-hidden="true" />
+      {seccion.titulo}
+    </Link>
+  );
+
   if (seccionBloqueada) {
     return (
       <div>
-        <Link
-          href={`/niveles/${nivel.codigo}/${seccion.orden}`}
-          className="text-sm font-semibold text-brand-blue"
-        >
-          &larr; {seccion.titulo}
-        </Link>
-        <h1 className="mb-4 mt-2 text-2xl font-extrabold">Prueba de cierre</h1>
-        <ContenidoBloqueado mensaje="Esta sección es premium. La primera sección de cada nivel es gratis; el resto se desbloquea con una cuenta premium." />
+        {enlaceVolver}
+        <h1 className="mb-4 mt-2 text-2xl font-extrabold">
+          {ui.pruebaDeCierre.es}
+        </h1>
+        <ContenidoBloqueado mensajeClave="mensajeSeccionPremium" />
       </div>
     );
   }
@@ -55,24 +65,25 @@ export default async function PruebaSeccionPage({
 
   return (
     <div>
-      <Link
-        href={`/niveles/${nivel.codigo}/${seccion.orden}`}
-        className="text-sm font-semibold text-brand-blue"
-      >
-        &larr; {seccion.titulo}
-      </Link>
-      <h1 className="mb-1 mt-2 text-2xl font-extrabold">Prueba de cierre</h1>
+      {enlaceVolver}
+      <h1 className="mb-1 mt-2 text-2xl font-extrabold">
+        {ui.pruebaDeCierre.es}{" "}
+        <span className="text-lg font-normal opacity-60">({ui.pruebaDeCierre.ru})</span>
+      </h1>
       <p className="mb-6 text-chigui-brown">
-        Mezcla las 4 clases de &quot;{seccion.titulo}&quot;. Necesitas 60% o más para que el
-        intento cuente para tu rango.
+        {ui.necesitas60.es} (&quot;{seccion.titulo}&quot;).
+        <br />
+        <span className="opacity-70">
+          {ui.necesitas60.ru} («{seccion.titulo}»).
+        </span>
       </p>
 
       <SelectorPerfil perfilActivo={perfilActivo} />
 
       {ejerciciosPerfil.length === 0 ? (
-        <p className="rounded-xl2 bg-white p-4 text-chigui-brown shadow-sm">
-          Todavía no hay ejercicios de prueba de cierre cargados para esta sección.
-        </p>
+        <div className="rounded-card bg-white p-4 shadow-soft">
+          <TextoBilingue clave="sinEjerciciosPrueba" as="p" className="text-chigui-brown" />
+        </div>
       ) : (
         <PruebaExercisePlayer
           key={`${seccion.id}-${perfilActivo}`}

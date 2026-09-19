@@ -10,6 +10,8 @@ import {
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { calcularEstadoPremium } from "@/lib/premium";
 import { NOMBRE_RANGO, type RangoMaestria } from "@/types/content";
+import TextoBilingue from "@/components/ui/TextoBilingue";
+import { ui } from "@/lib/i18n/diccionario";
 
 export default async function NivelPage({
   params,
@@ -38,7 +40,7 @@ export default async function NivelPage({
         className="inline-flex items-center gap-1 text-sm font-semibold text-brand-blue"
       >
         <ArrowLeft className="h-4 w-4" aria-hidden="true" />
-        Todos los niveles
+        <TextoBilingue clave="todosLosNiveles" modo="en_linea" />
       </Link>
 
       <h1 className="mb-1 mt-2 text-2xl font-extrabold">{nivel.nombre}</h1>
@@ -47,7 +49,12 @@ export default async function NivelPage({
       {user && (
         <div className="mb-6 rounded-card bg-white p-4 shadow-soft">
           <div className="mb-2 flex items-baseline justify-between">
-            <span className="text-sm font-bold">Tu progreso en {nivel.codigo}</span>
+            <span className="text-sm font-bold">
+              {ui.tuProgresoEn.es} {nivel.codigo}{" "}
+              <span className="font-normal opacity-60">
+                ({ui.tuProgresoEn.ru} {nivel.codigo})
+              </span>
+            </span>
             <span className="text-sm text-chigui-brown">
               {completadas} de {secciones.length}
             </span>
@@ -109,7 +116,11 @@ export default async function NivelPage({
                 <div className="min-w-0 flex-1">
                   <p className="font-bold">{seccion.titulo}</p>
                   <p className="text-xs text-chigui-brown">
-                    {seccion.es_intro ? "Introducción del nivel" : "Sección"}
+                    {seccion.es_intro ? (
+                      <TextoBilingue clave="introduccionDelNivel" modo="en_linea" />
+                    ) : (
+                      <TextoBilingue clave="seccion" modo="en_linea" />
+                    )}
                   </p>
                 </div>
 
@@ -119,7 +130,9 @@ export default async function NivelPage({
                   </span>
                 )}
                 {bloqueada && (
-                  <span className="shrink-0 text-xs font-bold text-chigui-brown">Premium</span>
+                  <span className="shrink-0 text-xs font-bold text-chigui-brown">
+                    <TextoBilingue clave="premium" modo="en_linea" />
+                  </span>
                 )}
               </Link>
             </li>
@@ -132,7 +145,10 @@ export default async function NivelPage({
         className="mt-6 flex items-center justify-center gap-2 rounded-card bg-white p-4 text-center text-sm font-bold text-chigui-brown shadow-soft transition hover:-translate-y-0.5 hover:text-brand-green hover:shadow-soft-lg"
       >
         <ClipboardCheck className="h-4 w-4" aria-hidden="true" />
-        Prueba final de {nivel.codigo}
+        {ui.pruebaFinalDe.es} {nivel.codigo}{" "}
+        <span className="opacity-70">
+          ({ui.pruebaFinalDe.ru} {nivel.codigo})
+        </span>
       </Link>
     </div>
   );

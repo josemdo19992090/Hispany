@@ -3,6 +3,8 @@
 import { useState } from "react";
 import type { EjercicioContenido } from "@/types/content";
 import Boton from "@/components/ui/Boton";
+import TextoBilingue from "@/components/ui/TextoBilingue";
+import { ui } from "@/lib/i18n/diccionario";
 
 export default function EncontrarError({
   contenido,
@@ -18,9 +20,14 @@ export default function EncontrarError({
 
   return (
     <div>
-      <p className="mb-1 text-lg font-bold">Encuentra el error</p>
+      <p className="mb-1 text-lg font-bold">
+        {ui.encuentraElError.es}{" "}
+        <span className="font-normal opacity-60">({ui.encuentraElError.ru})</span>
+      </p>
       <p className="mb-4 text-sm text-chigui-brown">
-        Toca la palabra que está incorrecta en la frase.
+        {ui.tocaLaPalabraIncorrecta.es}
+        <br />
+        <span className="opacity-70">{ui.tocaLaPalabraIncorrecta.ru}</span>
       </p>
 
       <p className="mb-2 flex flex-wrap items-center rounded-field bg-chigui-cream p-4 text-lg font-semibold">
@@ -51,7 +58,7 @@ export default function EncontrarError({
         disabled={elegida === null || deshabilitado}
         onClick={() => elegida !== null && onResponder(elegida)}
       >
-        Comprobar
+        <TextoBilingue clave="comprobar" modo="en_linea" />
       </Boton>
     </div>
   );

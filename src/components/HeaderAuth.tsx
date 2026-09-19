@@ -2,6 +2,7 @@ import Link from "next/link";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { getUsuarioActual } from "@/lib/data";
 import { calcularEstadoPremium } from "@/lib/premium";
+import TextoBilingue from "@/components/ui/TextoBilingue";
 import CerrarSesionButton from "./CerrarSesionButton";
 
 export default async function HeaderAuth() {
@@ -18,7 +19,7 @@ export default async function HeaderAuth() {
         href="/login"
         className="rounded-full bg-brand-green px-4 py-1.5 text-sm font-bold text-white"
       >
-        Iniciar sesión
+        <TextoBilingue clave="iniciarSesion" modo="en_linea" />
       </Link>
     );
   }
@@ -37,8 +38,11 @@ export default async function HeaderAuth() {
         </Link>
       )}
       {enTrial && diasRestantesTrial !== null && (
-        <span className="rounded-full bg-brand-yellow px-3 py-1 text-xs font-bold text-chigui-brown-dark">
-          🎁 {diasRestantesTrial} día{diasRestantesTrial === 1 ? "" : "s"} de prueba premium
+        <span className="hidden rounded-full bg-brand-yellow px-3 py-1 text-xs font-bold text-chigui-brown-dark sm:inline">
+          🎁 {diasRestantesTrial} día{diasRestantesTrial === 1 ? "" : "s"} de prueba{" "}
+          <span className="opacity-70">
+            ({diasRestantesTrial} дн. пробного периода)
+          </span>
         </span>
       )}
       <span className="hidden text-chigui-brown sm:inline">{user.email}</span>

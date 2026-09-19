@@ -3,6 +3,8 @@
 import { useMemo, useState } from "react";
 import type { EjercicioContenido } from "@/types/content";
 import Boton from "@/components/ui/Boton";
+import TextoBilingue from "@/components/ui/TextoBilingue";
+import { ui } from "@/lib/i18n/diccionario";
 
 // Hash simple y estable de una cadena. Se usa para desordenar las opciones de
 // forma determinista: si usáramos Math.random() el orden cambiaría en cada
@@ -59,9 +61,13 @@ export default function Emparejar({
 
   return (
     <div>
-      <p className="mb-1 text-lg font-bold">Empareja cada elemento con su pareja.</p>
+      <p className="mb-1 text-lg font-bold">
+        {ui.empareja.es} <span className="font-normal opacity-60">({ui.empareja.ru})</span>
+      </p>
       <p className="mb-4 text-sm text-chigui-brown">
-        Toca una palabra de la izquierda y luego su pareja de la derecha.
+        {ui.tocaIzquierdaLuegoDerecha.es}
+        <br />
+        <span className="opacity-70">{ui.tocaIzquierdaLuegoDerecha.ru}</span>
       </p>
 
       <div className="grid grid-cols-2 gap-3">
@@ -121,7 +127,7 @@ export default function Emparejar({
         disabled={!completo || deshabilitado}
         onClick={() => onResponder(elegidos)}
       >
-        Comprobar
+        <TextoBilingue clave="comprobar" modo="en_linea" />
       </Boton>
     </div>
   );
