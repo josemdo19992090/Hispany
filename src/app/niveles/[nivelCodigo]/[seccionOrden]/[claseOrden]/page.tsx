@@ -6,7 +6,7 @@ import {
   getClasesPorSeccion,
   getVersionClase,
   getEjerciciosPorClase,
-} from "@/lib/mock-data";
+} from "@/lib/data";
 import type { PerfilAlumno } from "@/types/content";
 
 const PERFILES: { valor: PerfilAlumno; etiqueta: string }[] = [
@@ -14,33 +14,30 @@ const PERFILES: { valor: PerfilAlumno; etiqueta: string }[] = [
   { valor: "trabajo_viajes", etiqueta: "Trabajo / Viajes" },
 ];
 
-export default function ClasePage({
+export default async function ClasePage({
   params,
   searchParams,
 }: {
   params: { nivelCodigo: string; seccionOrden: string; claseOrden: string };
   searchParams: { perfil?: string };
 }) {
-  const nivel = getNivelPorCodigo(params.nivelCodigo);
+  const nivel = await getNivelPorCodigo(params.nivelCodigo);
   if (!nivel) notFound();
 
-  const seccion = getSeccionesPorNivel(nivel.id).find(
-    (s) => String(s.orden) === params.seccionOrden
-  );
+  const seccionesDelNivel = await getSeccionesPorNivel(nivel.id);
+  const seccion = seccionesDelNivel.find((s) => String(s.orden) === params.seccionOrden);
   if (!seccion) notFound();
 
-  const clase = getClasesPorSeccion(seccion.id).find(
-    (c) => String(c.orden) === params.claseOrden
-  );
+  const clasesDeSeccion = await getClasesPorSeccion(seccion.id);
+  const clase = clasesDeSeccion.find((c) => String(c.orden) === params.claseOrden);
   if (!clase) notFound();
 
   const perfilActivo: PerfilAlumno =
     searchParams.perfil === "trabajo_viajes" ? "trabajo_viajes" : "ninos";
 
-  const version = getVersionClase(clase.id, perfilActivo);
-  const ejerciciosClase = getEjerciciosPorClase(clase.id).filter(
-    (e) => e.perfil === perfilActivo
-  );
+  const version = await getVersionClase(clase.id, perfilActivo);
+  const ejerciciosDeClase = await getEjerciciosPorClase(clase.id);
+  const ejerciciosClase = ejerciciosDeClase.filter((e) => e.perfil === perfilActivo);
 
   return (
     <div>

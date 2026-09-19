@@ -1,16 +1,16 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { getNivelPorCodigo, getSeccionesPorNivel } from "@/lib/mock-data";
+import { getNivelPorCodigo, getSeccionesPorNivel } from "@/lib/data";
 
-export default function NivelPage({
+export default async function NivelPage({
   params,
 }: {
   params: { nivelCodigo: string };
 }) {
-  const nivel = getNivelPorCodigo(params.nivelCodigo);
+  const nivel = await getNivelPorCodigo(params.nivelCodigo);
   if (!nivel) notFound();
 
-  const secciones = getSeccionesPorNivel(nivel.id);
+  const secciones = await getSeccionesPorNivel(nivel.id);
 
   return (
     <div>

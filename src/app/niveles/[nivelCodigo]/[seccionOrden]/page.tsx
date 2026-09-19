@@ -1,21 +1,20 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { getNivelPorCodigo, getSeccionesPorNivel, getClasesPorSeccion } from "@/lib/mock-data";
+import { getNivelPorCodigo, getSeccionesPorNivel, getClasesPorSeccion } from "@/lib/data";
 
-export default function SeccionPage({
+export default async function SeccionPage({
   params,
 }: {
   params: { nivelCodigo: string; seccionOrden: string };
 }) {
-  const nivel = getNivelPorCodigo(params.nivelCodigo);
+  const nivel = await getNivelPorCodigo(params.nivelCodigo);
   if (!nivel) notFound();
 
-  const seccion = getSeccionesPorNivel(nivel.id).find(
-    (s) => String(s.orden) === params.seccionOrden
-  );
+  const seccionesDelNivel = await getSeccionesPorNivel(nivel.id);
+  const seccion = seccionesDelNivel.find((s) => String(s.orden) === params.seccionOrden);
   if (!seccion) notFound();
 
-  const clasesDeSeccion = getClasesPorSeccion(seccion.id);
+  const clasesDeSeccion = await getClasesPorSeccion(seccion.id);
 
   return (
     <div>

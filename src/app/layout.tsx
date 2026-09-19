@@ -20,6 +20,10 @@ export const metadata: Metadata = {
   description: "Aprende español con Chigui",
 };
 
+// Fase 1: el contenido se administra en Supabase y aún no hay revalidación
+// incremental configurada, así que pedimos datos frescos en cada request.
+export const dynamic = "force-dynamic";
+
 export default function RootLayout({
   children,
 }: Readonly<{

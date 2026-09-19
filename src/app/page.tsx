@@ -1,8 +1,9 @@
 import Link from "next/link";
-import { niveles } from "@/lib/mock-data";
+import { getNiveles } from "@/lib/data";
 import ChiguiMascot from "@/components/ChiguiMascot";
 
-export default function HomePage() {
+export default async function HomePage() {
+  const niveles = await getNiveles();
   return (
     <div>
       <div className="mb-8 flex items-center gap-4 rounded-xl2 bg-white p-5 shadow-sm">
