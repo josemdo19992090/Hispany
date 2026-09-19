@@ -8,12 +8,14 @@ import { createSupabaseBrowserClient } from "@/lib/supabase/browser";
 import Boton from "@/components/ui/Boton";
 import TextoBilingue from "@/components/ui/TextoBilingue";
 import { ui } from "@/lib/i18n/diccionario";
+import type { PerfilAlumno } from "@/types/content";
 
 export default function LoginPage() {
   const [modo, setModo] = useState<"login" | "registro">("login");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [nombre, setNombre] = useState("");
+  const [perfil, setPerfil] = useState<PerfilAlumno>("trabajo_viajes");
   const [cargando, setCargando] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [avisoRegistro, setAvisoRegistro] = useState(false);
@@ -40,7 +42,7 @@ export default function LoginPage() {
       const { error } = await supabase.auth.signUp({
         email,
         password,
-        options: { data: { nombre: nombre || email.split("@")[0] } },
+        options: { data: { nombre: nombre || email.split("@")[0], perfil } },
       });
       if (error) {
         setError(error.message);
@@ -92,15 +94,51 @@ export default function LoginPage() {
         className="flex flex-col gap-3 rounded-card bg-white p-5 shadow-soft"
       >
         {modo === "registro" && (
-          <label className="flex flex-col gap-1 text-sm font-semibold">
-            <TextoBilingue clave="nombre" modo="en_linea" />
-            <input
-              type="text"
-              value={nombre}
-              onChange={(e) => setNombre(e.target.value)}
-              className="rounded-field bg-chigui-cream px-3 py-2 font-normal text-chigui-brown-dark"
-            />
-          </label>
+          <>
+            <label className="flex flex-col gap-1 text-sm font-semibold">
+              <TextoBilingue clave="nombre" modo="en_linea" />
+              <input
+                type="text"
+                value={nombre}
+                onChange={(e) => setNombre(e.target.value)}
+                className="rounded-field bg-chigui-cream px-3 py-2 font-normal text-chigui-brown-dark"
+              />
+            </label>
+
+            <div className="flex flex-col gap-1 text-sm font-semibold">
+              <TextoBilingue clave="paraQuienEsLaCuenta" modo="en_linea" />
+              <div className="flex gap-2">
+                <button
+                  type="button"
+                  aria-pressed={perfil === "ninos"}
+                  onClick={() => setPerfil("ninos")}
+                  className={`flex-1 rounded-field px-3 py-2 text-sm font-bold transition ${
+                    perfil === "ninos"
+                      ? "bg-brand-green text-white"
+                      : "bg-chigui-cream text-chigui-brown-dark"
+                  }`}
+                >
+                  {ui.perfilNinos.es}{" "}
+                  <span className="font-normal opacity-70">({ui.perfilNinos.ru})</span>
+                </button>
+                <button
+                  type="button"
+                  aria-pressed={perfil === "trabajo_viajes"}
+                  onClick={() => setPerfil("trabajo_viajes")}
+                  className={`flex-1 rounded-field px-3 py-2 text-sm font-bold transition ${
+                    perfil === "trabajo_viajes"
+                      ? "bg-brand-green text-white"
+                      : "bg-chigui-cream text-chigui-brown-dark"
+                  }`}
+                >
+                  {ui.perfilTrabajoViajes.es}{" "}
+                  <span className="font-normal opacity-70">
+                    ({ui.perfilTrabajoViajes.ru})
+                  </span>
+                </button>
+              </div>
+            </div>
+          </>
         )}
         <label className="flex flex-col gap-1 text-sm font-semibold">
           <TextoBilingue clave="correo" modo="en_linea" />

@@ -9,7 +9,7 @@ import {
 } from "@/lib/data";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { calcularEstadoPremium } from "@/lib/premium";
-import type { PerfilAlumno } from "@/types/content";
+import { resolverPerfilActivo } from "@/lib/perfil";
 import PruebaExercisePlayer from "@/components/exercises/PruebaExercisePlayer";
 import ContenidoBloqueado from "@/components/ContenidoBloqueado";
 import SelectorPerfil from "@/components/SelectorPerfil";
@@ -57,8 +57,7 @@ export default async function PruebaSeccionPage({
     );
   }
 
-  const perfilActivo: PerfilAlumno =
-    searchParams.perfil === "trabajo_viajes" ? "trabajo_viajes" : "ninos";
+  const perfilActivo = resolverPerfilActivo(searchParams.perfil, usuario);
 
   const ejerciciosSeccion = await getEjerciciosPorSeccion(seccion.id);
   const ejerciciosPerfil = ejerciciosSeccion.filter((e) => e.perfil === perfilActivo);

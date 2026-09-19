@@ -20,6 +20,7 @@ export const ui = {
   entrar: { ru: "Войти", es: "Entrar" },
   nombre: { ru: "Имя", es: "Nombre" },
   seguirSinCuenta: { ru: "Продолжить без аккаунта", es: "Seguir explorando sin cuenta" },
+  paraQuienEsLaCuenta: { ru: "Для кого этот аккаунт?", es: "¿Para quién es esta cuenta?" },
 
   // Home
   holaSoyChigui: { ru: "Привет! Я Чигуи", es: "¡Hola! Soy Chigui" },
