@@ -103,6 +103,17 @@ export default async function ClasePage({
           <Bloque titulo="💬 Conversación" texto={version.conversacion_md} />
           <Bloque titulo="📝 Gramática" texto={version.gramatica_md} />
           <Bloque titulo="✍️ Escritura" texto={version.escritura_md} />
+
+          {esPremium ? (
+            <a
+              href={`/api/pdf/clase/${clase.id}?perfil=${perfilActivo}`}
+              className="flex items-center justify-center gap-2 rounded-xl2 border-2 border-brand-blue bg-white p-3 text-center text-sm font-bold text-brand-blue hover:bg-brand-blue hover:text-white"
+            >
+              📄 Descargar PDF de explicaciones
+            </a>
+          ) : (
+            <ContenidoBloqueado mensaje="El PDF de explicaciones se genera al vuelo y es una función premium." />
+          )}
         </div>
       )}
 
