@@ -5,6 +5,15 @@
 :root {
   --background: #fbf3e7;
   --foreground: #6b4423;
+  /* `only light` (no solo `light`): Chrome en Android oscurece por su cuenta
+     las páginas que no declaran esquema de color, y en el teléfono la app se
+     veía toda con fondo negro. La palabra `only` le prohíbe ese reemplazo. */
+  color-scheme: only light;
+}
+
+html {
+  /* Para que el rebote del scroll en móvil no muestre una franja de otro color. */
+  background: var(--background);
 }
 
 body {

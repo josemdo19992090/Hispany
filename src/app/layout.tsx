@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Nunito } from "next/font/google";
 import Link from "next/link";
 import ChiguiMascot from "@/components/ChiguiMascot";
@@ -18,9 +18,44 @@ const nunito = Nunito({
   display: "swap",
 });
 
+const TITULO = "Hispany";
+const DESCRIPCION = "Aprende español con Chigui · Учи испанский с Чигуи";
+
 export const metadata: Metadata = {
-  title: "Hispany",
-  description: "Aprende español con Chigui",
+  // Sin metadataBase, Next deja las URLs de las imágenes relativas y los chats
+  // (WhatsApp, Telegram) no pueden resolverlas: la vista previa sale sin imagen.
+  metadataBase: new URL("https://hispany.vercel.app"),
+  title: TITULO,
+  description: DESCRIPCION,
+  openGraph: {
+    title: TITULO,
+    description: DESCRIPCION,
+    url: "/",
+    siteName: TITULO,
+    type: "website",
+    locale: "es_ES",
+    images: [
+      {
+        // Chigui aplanado sobre fondo crema: un PNG con transparencia se ve
+        // con fondo negro en la mayoría de los chats.
+        url: "/og.png",
+        width: 1200,
+        height: 630,
+        alt: "Chigui, la mascota de Hispany",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: TITULO,
+    description: DESCRIPCION,
+    images: ["/og.png"],
+  },
+};
+
+export const viewport: Viewport = {
+  themeColor: "#fbf3e7",
+  colorScheme: "only light",
 };
 
 // El contenido se administra en Supabase y aún no hay revalidación incremental
