@@ -6,9 +6,13 @@ import {
   getClasesPorSeccion,
   getVersionClase,
   getEjerciciosPorClase,
+  getUsuarioActual,
 } from "@/lib/data";
+import { createSupabaseServerClient } from "@/lib/supabase/server";
+import { calcularEstadoPremium } from "@/lib/premium";
 import type { PerfilAlumno } from "@/types/content";
 import ClaseExercisePlayer from "@/components/exercises/ClaseExercisePlayer";
+import ContenidoBloqueado from "@/components/ContenidoBloqueado";
 
 const PERFILES: { valor: PerfilAlumno; etiqueta: string }[] = [
   { valor: "ninos", etiqueta: "Niños" },
@@ -33,12 +37,34 @@ export default async function ClasePage({
   const clase = clasesDeSeccion.find((c) => String(c.orden) === params.claseOrden);
   if (!clase) notFound();
 
+  const supabase = await createSupabaseServerClient();
+  const usuario = supabase ? await getUsuarioActual(supabase) : null;
+  const { esPremium } = calcularEstadoPremium(usuario);
+  const seccionBloqueada = !seccion.es_gratis && !esPremium;
+
+  if (seccionBloqueada) {
+    return (
+      <div>
+        <Link
+          href={`/niveles/${nivel.codigo}/${seccion.orden}`}
+          className="text-sm font-semibold text-brand-blue"
+        >
+          &larr; {seccion.titulo}
+        </Link>
+        <h1 className="mb-4 mt-2 text-2xl font-extrabold">{clase.titulo}</h1>
+        <ContenidoBloqueado mensaje="Esta sección es premium. La primera sección de cada nivel es gratis; el resto se desbloquea con una cuenta premium." />
+      </div>
+    );
+  }
+
   const perfilActivo: PerfilAlumno =
     searchParams.perfil === "trabajo_viajes" ? "trabajo_viajes" : "ninos";
 
   const version = await getVersionClase(clase.id, perfilActivo);
   const ejerciciosDeClase = await getEjerciciosPorClase(clase.id);
   const ejerciciosClase = ejerciciosDeClase.filter((e) => e.perfil === perfilActivo);
+  const ejerciciosJugables = ejerciciosClase.filter((e) => !e.is_premium || esPremium);
+  const cantidadBloqueados = ejerciciosClase.length - ejerciciosJugables.length;
 
   return (
     <div>
@@ -81,7 +107,7 @@ export default async function ClasePage({
       )}
 
       <h2 className="mb-3 mt-8 text-lg font-bold">Ejercicios de comprobación</h2>
-      {ejerciciosClase.length === 0 ? (
+      {ejerciciosJugables.length === 0 ? (
         <p className="rounded-xl2 bg-white p-4 text-chigui-brown shadow-sm">
           Sin ejercicios de prueba para este perfil todavía.
         </p>
@@ -90,8 +116,15 @@ export default async function ClasePage({
           key={`${clase.id}-${perfilActivo}`}
           claseId={clase.id}
           seccionId={seccion.id}
-          ejercicios={ejerciciosClase}
+          ejercicios={ejerciciosJugables}
         />
+      )}
+
+      {cantidadBloqueados > 0 && (
+        <p className="mt-4 rounded-xl2 border-2 border-dashed border-chigui-tan p-3 text-center text-sm text-chigui-brown">
+          🔒 {cantidadBloqueados} variante{cantidadBloqueados > 1 ? "s" : ""} extra premium
+          disponible{cantidadBloqueados > 1 ? "s" : ""} para practicar más.
+        </p>
       )}
     </div>
   );

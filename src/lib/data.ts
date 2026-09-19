@@ -1,6 +1,6 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { supabase, supabaseConfigurado } from "@/lib/supabase/client";
-import type { Clase, ClaseVersion, Ejercicio, Nivel, Seccion } from "@/types/content";
+import type { Clase, ClaseVersion, Ejercicio, Nivel, Seccion, Usuario } from "@/types/content";
 
 // Capa de acceso a datos: lee de Supabase. Lanza un error explícito si el
 // proyecto todavía no está conectado (ver .env.local.example).
@@ -122,6 +122,24 @@ export async function getClasesCompletadas(
     .in("clase_id", idsClases);
   if (error) throw error;
   return new Set((data ?? []).map((d) => d.clase_id));
+}
+
+// Perfil de aplicación (tabla `usuarios`) del usuario autenticado en esta request.
+// null si no hay sesión. Se usa para decidir qué contenido está bloqueado
+// (freemium): la sección, los ejercicios premium y las pruebas.
+export async function getUsuarioActual(authedClient: SupabaseClient): Promise<Usuario | null> {
+  const {
+    data: { user },
+  } = await authedClient.auth.getUser();
+  if (!user) return null;
+
+  const { data, error } = await authedClient
+    .from("usuarios")
+    .select("*")
+    .eq("id", user.id)
+    .maybeSingle();
+  if (error) throw error;
+  return data as Usuario | null;
 }
 
 export interface ProgresoSeccionResumen {

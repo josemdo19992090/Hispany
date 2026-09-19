@@ -91,6 +91,7 @@ export interface Usuario {
   nombre: string;
   perfil: PerfilAlumno;
   rol: "estudiante" | "admin";
+  es_premium: boolean;
   fecha_inicio: string;
 }
 

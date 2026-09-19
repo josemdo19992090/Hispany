@@ -9,10 +9,12 @@ export default function PruebaExercisePlayer({
   ejercicios,
   seccionId,
   nivelId,
+  esPremium = false,
 }: {
   ejercicios: Ejercicio[];
   seccionId?: string;
   nivelId?: string;
+  esPremium?: boolean;
 }) {
   const [estado, setEstado] = useState<
     | { tipo: "esperando" }
@@ -31,7 +33,11 @@ export default function PruebaExercisePlayer({
 
   return (
     <div>
-      <ExercisePlayer ejercicios={ejercicios} onTerminar={handleTerminar} />
+      <ExercisePlayer
+        ejercicios={ejercicios}
+        onTerminar={handleTerminar}
+        mostrarErroresDetallados={esPremium}
+      />
       {estado.tipo === "sin_sesion" && (
         <p className="mt-3 text-center text-sm font-semibold text-chigui-brown">
           Inicia sesión para que este intento quede registrado.

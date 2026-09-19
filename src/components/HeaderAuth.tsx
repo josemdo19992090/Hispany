@@ -1,5 +1,7 @@
 import Link from "next/link";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
+import { getUsuarioActual } from "@/lib/data";
+import { calcularEstadoPremium } from "@/lib/premium";
 import CerrarSesionButton from "./CerrarSesionButton";
 
 export default async function HeaderAuth() {
@@ -21,8 +23,16 @@ export default async function HeaderAuth() {
     );
   }
 
+  const usuario = await getUsuarioActual(supabase);
+  const { enTrial, diasRestantesTrial } = calcularEstadoPremium(usuario);
+
   return (
     <div className="flex items-center gap-3 text-sm">
+      {enTrial && diasRestantesTrial !== null && (
+        <span className="rounded-full bg-brand-yellow px-3 py-1 text-xs font-bold text-chigui-brown-dark">
+          🎁 {diasRestantesTrial} día{diasRestantesTrial === 1 ? "" : "s"} de prueba premium
+        </span>
+      )}
       <span className="hidden text-chigui-brown sm:inline">{user.email}</span>
       <CerrarSesionButton />
     </div>

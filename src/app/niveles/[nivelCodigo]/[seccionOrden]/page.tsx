@@ -5,8 +5,11 @@ import {
   getSeccionesPorNivel,
   getClasesPorSeccion,
   getClasesCompletadas,
+  getUsuarioActual,
 } from "@/lib/data";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
+import { calcularEstadoPremium } from "@/lib/premium";
+import ContenidoBloqueado from "@/components/ContenidoBloqueado";
 
 export default async function SeccionPage({
   params,
@@ -23,11 +26,15 @@ export default async function SeccionPage({
   const clasesDeSeccion = await getClasesPorSeccion(seccion.id);
 
   const supabase = await createSupabaseServerClient();
+  const usuario = supabase ? await getUsuarioActual(supabase) : null;
+  const { esPremium } = calcularEstadoPremium(usuario);
+  const bloqueada = !seccion.es_gratis && !esPremium;
+
   const {
     data: { user },
   } = supabase ? await supabase.auth.getUser() : { data: { user: null } };
   const completadas =
-    user && supabase
+    user && supabase && !bloqueada
       ? await getClasesCompletadas(supabase, user.id, seccion.id)
       : new Set<string>();
 
@@ -44,29 +51,48 @@ export default async function SeccionPage({
         </p>
       ) : (
         <ol className="flex flex-col gap-3">
-          {clasesDeSeccion.map((clase) => (
-            <li key={clase.id}>
-              <Link
-                href={`/niveles/${nivel.codigo}/${seccion.orden}/${clase.orden}`}
-                className="flex items-center gap-4 rounded-xl2 border-2 border-chigui-tan bg-white p-4 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md"
-              >
-                <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-brand-green font-bold text-white">
-                  {clase.orden}
-                </span>
-                <p className="flex-1 font-bold">{clase.titulo}</p>
-                {completadas.has(clase.id) && <span title="Completada">✅</span>}
-              </Link>
-            </li>
-          ))}
+          {clasesDeSeccion.map((clase) =>
+            bloqueada ? (
+              <li key={clase.id}>
+                <div className="flex items-center gap-4 rounded-xl2 border-2 border-chigui-tan bg-chigui-cream p-4 opacity-70">
+                  <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-chigui-tan font-bold text-white">
+                    🔒
+                  </span>
+                  <p className="flex-1 font-bold">{clase.titulo}</p>
+                </div>
+              </li>
+            ) : (
+              <li key={clase.id}>
+                <Link
+                  href={`/niveles/${nivel.codigo}/${seccion.orden}/${clase.orden}`}
+                  className="flex items-center gap-4 rounded-xl2 border-2 border-chigui-tan bg-white p-4 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md"
+                >
+                  <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-brand-green font-bold text-white">
+                    {clase.orden}
+                  </span>
+                  <p className="flex-1 font-bold">{clase.titulo}</p>
+                  {completadas.has(clase.id) && <span title="Completada">✅</span>}
+                </Link>
+              </li>
+            )
+          )}
         </ol>
       )}
 
-      <Link
-        href={`/niveles/${nivel.codigo}/${seccion.orden}/prueba`}
-        className="mt-6 block rounded-xl2 border-2 border-dashed border-chigui-tan p-4 text-center text-sm font-bold text-chigui-brown hover:border-brand-green hover:text-brand-green"
-      >
-        📝 Prueba de cierre de sección (mezcla las 4 clases)
-      </Link>
+      {bloqueada && (
+        <div className="mt-4">
+          <ContenidoBloqueado mensaje="Esta sección es premium. La primera sección de cada nivel es gratis; el resto se desbloquea con una cuenta premium." />
+        </div>
+      )}
+
+      {!bloqueada && (
+        <Link
+          href={`/niveles/${nivel.codigo}/${seccion.orden}/prueba`}
+          className="mt-6 block rounded-xl2 border-2 border-dashed border-chigui-tan p-4 text-center text-sm font-bold text-chigui-brown hover:border-brand-green hover:text-brand-green"
+        >
+          📝 Prueba de cierre de sección (mezcla las 4 clases)
+        </Link>
+      )}
     </div>
   );
 }

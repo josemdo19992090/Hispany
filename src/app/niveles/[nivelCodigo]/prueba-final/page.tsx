@@ -1,6 +1,8 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { getNivelPorCodigo, getEjerciciosPorNivel } from "@/lib/data";
+import { getNivelPorCodigo, getEjerciciosPorNivel, getUsuarioActual } from "@/lib/data";
+import { createSupabaseServerClient } from "@/lib/supabase/server";
+import { calcularEstadoPremium } from "@/lib/premium";
 import type { PerfilAlumno } from "@/types/content";
 import PruebaExercisePlayer from "@/components/exercises/PruebaExercisePlayer";
 
@@ -19,6 +21,10 @@ export default async function PruebaFinalNivelPage({
 
   const ejerciciosNivel = await getEjerciciosPorNivel(nivel.id);
   const ejerciciosPerfil = ejerciciosNivel.filter((e) => e.perfil === perfilActivo);
+
+  const supabase = await createSupabaseServerClient();
+  const usuario = supabase ? await getUsuarioActual(supabase) : null;
+  const { esPremium } = calcularEstadoPremium(usuario);
 
   return (
     <div>
@@ -39,6 +45,7 @@ export default async function PruebaFinalNivelPage({
           key={`${nivel.id}-${perfilActivo}`}
           ejercicios={ejerciciosPerfil}
           nivelId={nivel.id}
+          esPremium={esPremium}
         />
       )}
     </div>

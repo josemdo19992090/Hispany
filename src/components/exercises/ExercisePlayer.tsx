@@ -14,6 +14,7 @@ import Emparejar from "./Emparejar";
 import OrdenarPalabras from "./OrdenarPalabras";
 import VerdaderoFalso from "./VerdaderoFalso";
 import EncontrarError from "./EncontrarError";
+import ContenidoBloqueado from "@/components/ContenidoBloqueado";
 
 interface RespuestaRegistrada extends ResultadoEvaluacion {
   ejercicio: Ejercicio;
@@ -28,9 +29,11 @@ interface ResumenFinal {
 export default function ExercisePlayer({
   ejercicios,
   onTerminar,
+  mostrarErroresDetallados = true,
 }: {
   ejercicios: Ejercicio[];
   onTerminar?: (resumen: ResumenFinal) => void;
+  mostrarErroresDetallados?: boolean;
 }) {
   const [indice, setIndice] = useState(0);
   const [resultadoActual, setResultadoActual] = useState<ResultadoEvaluacion | null>(null);
@@ -85,7 +88,7 @@ export default function ExercisePlayer({
           Respondiste correctamente {correctas} de {total} ({porcentaje}%).
         </p>
 
-        {errores.length > 0 && (
+        {errores.length > 0 && mostrarErroresDetallados && (
           <div className="mt-4">
             <p className="mb-2 font-bold">Revisa tus errores:</p>
             <ul className="flex flex-col gap-2">
@@ -99,6 +102,12 @@ export default function ExercisePlayer({
                 </li>
               ))}
             </ul>
+          </div>
+        )}
+
+        {errores.length > 0 && !mostrarErroresDetallados && (
+          <div className="mt-4">
+            <ContenidoBloqueado mensaje="El detalle de tus errores con las respuestas correctas es una función premium." />
           </div>
         )}
 

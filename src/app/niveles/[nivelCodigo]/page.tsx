@@ -1,7 +1,13 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { getNivelPorCodigo, getSeccionesPorNivel, getProgresoSecciones } from "@/lib/data";
+import {
+  getNivelPorCodigo,
+  getSeccionesPorNivel,
+  getProgresoSecciones,
+  getUsuarioActual,
+} from "@/lib/data";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
+import { calcularEstadoPremium } from "@/lib/premium";
 import { NOMBRE_RANGO, type RangoMaestria } from "@/types/content";
 
 export default async function NivelPage({
@@ -19,6 +25,8 @@ export default async function NivelPage({
     data: { user },
   } = supabase ? await supabase.auth.getUser() : { data: { user: null } };
   const progreso = user && supabase ? await getProgresoSecciones(supabase, user.id) : {};
+  const usuario = supabase ? await getUsuarioActual(supabase) : null;
+  const { esPremium } = calcularEstadoPremium(usuario);
 
   return (
     <div>
@@ -30,7 +38,7 @@ export default async function NivelPage({
 
       <ol className="flex flex-col gap-3">
         {secciones.map((seccion, i) => {
-          const bloqueada = !seccion.es_gratis;
+          const bloqueada = !seccion.es_gratis && !esPremium;
           const prog = progreso[seccion.id];
           return (
             <li key={seccion.id}>
