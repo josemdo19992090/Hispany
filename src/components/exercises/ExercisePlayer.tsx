@@ -140,16 +140,22 @@ export default function ExercisePlayer({
         </div>
       </div>
 
-      {/* El `key` es obligatorio: sin él, al pasar a otra pregunta DEL MISMO TIPO
-          React reutiliza el componente y se conserva la opción ya marcada. */}
+      {/* Las `key` son obligatorias: sin ellas, al pasar a otra pregunta DEL MISMO
+          TIPO React reutiliza el componente y se conserva la opción ya marcada.
+          Y tienen que ser DISTINTAS entre sí: dos hermanos con la misma key
+          rompen la reconciliación (React insertaba la pregunta nueva al lado de
+          la vieja en vez de reemplazarla). */}
       <RenderizadorEjercicio
-        key={ejercicioActual.id}
+        key={`ejercicio-${ejercicioActual.id}`}
         ejercicio={ejercicioActual}
         deshabilitado={resultadoActual !== null}
         onResponder={manejarRespuesta}
       />
 
-      <ReportarError key={ejercicioActual.id} ejercicioId={ejercicioActual.id} />
+      <ReportarError
+        key={`reporte-${ejercicioActual.id}`}
+        ejercicioId={ejercicioActual.id}
+      />
 
       {resultadoActual && (
         <div
