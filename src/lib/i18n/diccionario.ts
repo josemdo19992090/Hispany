@@ -37,6 +37,7 @@ export const ui = {
     es: "Elige un nivel para empezar a aprender español",
   },
   niveles: { ru: "Уровни", es: "Niveles" },
+  proximamente: { ru: "Скоро", es: "Próximamente" },
 
   // Nivel / sección
   todosLosNiveles: { ru: "Все уровни", es: "Todos los niveles" },
