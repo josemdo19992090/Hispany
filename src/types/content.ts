@@ -90,13 +90,40 @@ export interface Ejercicio {
   created_at: string;
 }
 
+// `_ru` es la pregunta/afirmación/instrucción del ejercicio EN RUSO, opcional
+// con respaldo al español (mismo patrón que textoClase en src/lib/i18n/contenido.ts):
+// la consigna es una explicación ("¿qué letra...?", "¿verdadero o falso...?")
+// y un alumno que todavía no lee español no entiende qué le preguntan aunque
+// cambie el toggle si esa consigna queda fija en español. Las opciones,
+// afirmaciones o palabras que SON el español a evaluar (respuesta_correcta,
+// opciones, palabras, pares) nunca se traducen — eso es lo que hay que saber.
 export type EjercicioContenido =
-  | { tipo: "opcion_multiple"; pregunta: string; opciones: string[]; respuesta_correcta: number }
-  | { tipo: "completar_espacio"; texto: string; respuestas: string[] }
+  | {
+      tipo: "opcion_multiple";
+      pregunta: string;
+      pregunta_ru?: string;
+      opciones: string[];
+      respuesta_correcta: number;
+    }
+  | { tipo: "completar_espacio"; texto: string; texto_ru?: string; respuestas: string[] }
   | { tipo: "emparejar"; pares: { izquierda: string; derecha: string }[] }
   | { tipo: "ordenar_palabras"; palabras: string[]; orden_correcto: number[] }
-  | { tipo: "verdadero_falso"; afirmacion: string; es_verdadero: boolean }
-  | { tipo: "encontrar_error"; texto: string; palabra_incorrecta: string; correccion: string };
+  | { tipo: "verdadero_falso"; afirmacion: string; afirmacion_ru?: string; es_verdadero: boolean }
+  | {
+      tipo: "encontrar_error";
+      texto: string;
+      // Solo tiene sentido cuando `texto` es una AFIRMACIÓN sobre una regla
+      // (ej. "La H suena como una K fuerte") y no una frase española real
+      // para practicar: en ese caso es una explicación como cualquier otra y
+      // se traduce. `palabra_incorrecta` debe ser un token idéntico en ambos
+      // textos (una letra suelta como "H" o "K") para que siga siendo
+      // clickeable en la versión rusa. Si `texto` es una frase de práctica
+      // real en español, NO se agrega texto_ru: ahí el objetivo es encontrar
+      // el error en el español que se está aprendiendo, no en una traducción.
+      texto_ru?: string;
+      palabra_incorrecta: string;
+      correccion: string;
+    };
 
 export interface ReporteEjercicio {
   id: string;

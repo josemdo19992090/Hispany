@@ -30,3 +30,12 @@ export function textoClase(version: ClaseVersion, bloque: BloqueClase, idioma: I
   }
   return version[`${bloque}_md`];
 }
+
+// Mismo respaldo, para consignas de ejercicio (pregunta/afirmación/texto):
+// la consigna es una explicación ("¿qué letra...?"), así que va en ruso
+// cuando la interfaz está en ruso; las opciones/respuestas en español que
+// son el objeto a evaluar no pasan por acá, se muestran tal cual siempre.
+export function textoConRespaldo(es: string, ru: string | undefined, idioma: Idioma): string {
+  if (idioma === "ru" && ru) return ru;
+  return es;
+}

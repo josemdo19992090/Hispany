@@ -4,6 +4,8 @@ import { useState } from "react";
 import type { EjercicioContenido } from "@/types/content";
 import Boton from "@/components/ui/Boton";
 import Texto from "@/components/ui/Texto";
+import { textoConRespaldo } from "@/lib/i18n/contenido";
+import { useIdioma } from "@/lib/i18n/context";
 
 export default function OpcionMultiple({
   contenido,
@@ -14,11 +16,14 @@ export default function OpcionMultiple({
   deshabilitado: boolean;
   onResponder: (respuesta: number) => void;
 }) {
+  const { idioma } = useIdioma();
   const [elegida, setElegida] = useState<number | null>(null);
 
   return (
     <div>
-      <p className="mb-4 text-lg font-bold">{contenido.pregunta}</p>
+      <p className="mb-4 text-lg font-bold">
+        {textoConRespaldo(contenido.pregunta, contenido.pregunta_ru, idioma)}
+      </p>
       <div className="flex flex-col gap-2">
         {contenido.opciones.map((opcion, i) => (
           <button

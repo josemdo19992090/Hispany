@@ -5,6 +5,7 @@ import type { EjercicioContenido } from "@/types/content";
 import Boton from "@/components/ui/Boton";
 import Texto from "@/components/ui/Texto";
 import { ui } from "@/lib/i18n/diccionario";
+import { textoConRespaldo } from "@/lib/i18n/contenido";
 import { useIdioma } from "@/lib/i18n/context";
 
 export default function EncontrarError({
@@ -18,7 +19,8 @@ export default function EncontrarError({
 }) {
   const { idioma } = useIdioma();
   const [elegida, setElegida] = useState<string | null>(null);
-  const palabras = contenido.texto.split(/(\s+)/); // conserva espacios
+  const texto = textoConRespaldo(contenido.texto, contenido.texto_ru, idioma);
+  const palabras = texto.split(/(\s+)/); // conserva espacios
 
   return (
     <div>

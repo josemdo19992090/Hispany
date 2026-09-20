@@ -1,4 +1,11 @@
-import type { Clase, ClaseVersion, Ejercicio, Nivel, Seccion } from "@/types/content";
+import type {
+  Clase,
+  ClaseVersion,
+  Ejercicio,
+  EjercicioContenido,
+  Nivel,
+  Seccion,
+} from "@/types/content";
 
 // Datos de prueba para la Fase 1 (navegación Niveles -> Secciones -> Clases).
 // La forma coincide exactamente con supabase/schema.sql para poder migrar
@@ -62,12 +69,14 @@ export const claseVersiones: ClaseVersion[] = [
     id: "a1-s0-c1-ninos",
     clase_id: "a1-s0-c1",
     perfil: "ninos",
-    lectura_md: "El español tiene 27 letras. Casi todas suenan igual siempre.",
-    lectura_ru: "В испанском 27 букв. Почти все звучат одинаково всегда.",
+    lectura_md:
+      "El abecedario sirve para algo muy práctico: deletrear tu nombre en voz alta. Por eso cada letra tiene su propio nombre.",
+    lectura_ru:
+      "Алфавит нужен для практических вещей: продиктовать своё имя вслух. Поэтому у каждой буквы есть своё название.",
     conversacion_md:
-      "Deletrea tu nombre en voz alta con un compañero. Ejemplo: ANA = A-ENE-A.",
+      "Con un compañero, deletreen en voz alta sus nombres. Usa la tabla de abajo para recordar el nombre de cada letra.",
     conversacion_ru:
-      "Продиктуй своё имя по буквам вслух с напарником. Пример: ANA = A-ENE-A.",
+      "С напарником продиктуйте вслух свои имена. Используй таблицу ниже, чтобы вспомнить названия букв.",
     gramatica_md: "Mirá la tabla: cada letra con su nombre, su sonido y un ejemplo.",
     gramatica_ru: "Смотри таблицу: каждая буква — с названием, звуком и примером.",
     escritura_md: "Escribe tu nombre y deletréalo debajo, letra por letra.",
@@ -79,12 +88,14 @@ export const claseVersiones: ClaseVersion[] = [
     id: "a1-s0-c1-trabajo",
     clase_id: "a1-s0-c1",
     perfil: "trabajo_viajes",
-    lectura_md: "El español usa el alfabeto latino: 27 letras que casi siempre suenan igual.",
-    lectura_ru: "В испанском используется латинский алфавит: 27 букв, которые почти всегда звучат одинаково.",
+    lectura_md:
+      "El abecedario sirve para algo muy práctico: deletrear tu nombre o tu email en voz alta, por ejemplo por teléfono. Por eso cada letra tiene su propio nombre.",
+    lectura_ru:
+      "Алфавит нужен для практических вещей: продиктовать своё имя или email вслух, например по телефону. Поэтому у каждой буквы есть своё название.",
     conversacion_md:
-      'Practica deletreando tu nombre y tu correo. En el trabajo es común escuchar: "¿Cómo se escribe?".',
+      "Con tu compañero, deletreen en voz alta sus nombres y un email inventado. Usa la tabla de abajo para recordar el nombre de cada letra.",
     conversacion_ru:
-      'Потренируйся диктовать по буквам своё имя и почту. На работе часто слышно: "¿Cómo se escribe?" (Как это пишется?).',
+      "Со своим напарником продиктуйте вслух свои имена и один придуманный email. Используй таблицу ниже, чтобы вспомнить названия букв.",
     gramatica_md: "Mirá la tabla: cada letra con su nombre, su sonido y un ejemplo.",
     gramatica_ru: "Смотри таблицу: каждая буква — с названием, звуком и примером.",
     escritura_md: "Escribe tu correo electrónico y deletréalo, letra por letra.",
@@ -124,135 +135,124 @@ export const claseVersiones: ClaseVersion[] = [
   },
 ];
 
+// 12 ejercicios cubriendo distintas letras y reglas (no solo H/Ñ), revisados
+// por un agente especialista en pedagogía + ruso + español. El abecedario no
+// cambia entre perfiles, así que la misma lista se usa para ninos y
+// trabajo_viajes. `emparejar` y `encontrar_error` (cuando texto es una frase
+// de práctica real) no llevan _ru: ver el comentario en EjercicioContenido
+// (src/types/content.ts) sobre cuándo corresponde el espejo en ruso.
+const EJERCICIOS_ABECEDARIO: EjercicioContenido[] = [
+  {
+    tipo: "opcion_multiple",
+    pregunta: "¿Cómo suena la C en la palabra 'cine'?",
+    pregunta_ru: "Как звучит буква C в слове 'cine'?",
+    opciones: ["/k/", "/s/", "/g/"],
+    respuesta_correcta: 1,
+  },
+  {
+    tipo: "verdadero_falso",
+    afirmacion: "En español, B y V suenan igual.",
+    afirmacion_ru: "В испанском B и V звучат одинаково.",
+    es_verdadero: true,
+  },
+  {
+    tipo: "completar_espacio",
+    texto: "La palabra 'gente' empieza con el mismo sonido que la letra ___.",
+    texto_ru: "Слово 'gente' начинается со звука, который совпадает со звуком буквы ___.",
+    respuestas: ["j"],
+  },
+  {
+    tipo: "emparejar",
+    pares: [
+      { izquierda: "B", derecha: "bueno" },
+      { izquierda: "LL", derecha: "lluvia" },
+      { izquierda: "Ñ", derecha: "niño" },
+      { izquierda: "J", derecha: "jamón" },
+      { izquierda: "Q", derecha: "queso" },
+    ],
+  },
+  {
+    tipo: "encontrar_error",
+    texto: "La H suena como una K fuerte.",
+    texto_ru: "Буква H звучит как сильная K.",
+    palabra_incorrecta: "K",
+    correccion: "muda (no suena)",
+  },
+  {
+    tipo: "opcion_multiple",
+    pregunta: "En 'queso', ¿qué pasa con la U?",
+    pregunta_ru: "В слове 'queso', что происходит с буквой U?",
+    opciones: ["Se pronuncia", "Es muda", "Se pronuncia como O"],
+    respuesta_correcta: 1,
+  },
+  {
+    tipo: "verdadero_falso",
+    afirmacion: "La Y puede sonar como vocal (en 'y') o como consonante (en 'yo').",
+    afirmacion_ru: "Буква Y может звучать как гласная (в 'y') или как согласная (в 'yo').",
+    es_verdadero: true,
+  },
+  {
+    tipo: "completar_espacio",
+    texto: "La letra ___ no existe en el alfabeto inglés ni en el ruso, y aparece en la palabra 'niño'.",
+    texto_ru: "Буквы ___ нет ни в английском, ни в русском алфавите, она есть в слове 'niño'.",
+    respuestas: ["ñ"],
+  },
+  {
+    tipo: "opcion_multiple",
+    pregunta: "¿Cómo suena la Z en 'zapato' en Latinoamérica?",
+    pregunta_ru: "Как звучит Z в слове 'zapato' в Латинской Америке?",
+    opciones: ["/s/", "/k/", "/g/"],
+    respuesta_correcta: 0,
+  },
+  {
+    // palabra_incorrecta tiene que ser un token idéntico en los dos textos
+    // (acá, la letra B) para que siga siendo clickeable en la versión rusa.
+    tipo: "encontrar_error",
+    texto: "La V suena distinta a la B en español.",
+    texto_ru: "Буква V звучит иначе, чем B в испанском.",
+    palabra_incorrecta: "B",
+    correccion: "igual (V y B suenan igual)",
+  },
+  {
+    tipo: "verdadero_falso",
+    afirmacion: "La LL suena parecido a la 'y' en la mayoría de países hispanohablantes.",
+    afirmacion_ru: "Буква LL в большинстве испаноязычных стран звучит похоже на «й».",
+    es_verdadero: true,
+  },
+  {
+    tipo: "emparejar",
+    pares: [
+      { izquierda: "/x/", derecha: "J" },
+      { izquierda: "/b/", derecha: "V" },
+      { izquierda: "/ɲ/", derecha: "Ñ" },
+      { izquierda: "muda", derecha: "H" },
+    ],
+  },
+];
+
+function ejerciciosAbecedario(perfil: "ninos" | "trabajo_viajes"): Ejercicio[] {
+  return EJERCICIOS_ABECEDARIO.map((contenido, i) => ({
+    id: `ej-abc-${i + 1}-${perfil}`,
+    clase_id: "a1-s0-c1",
+    seccion_id: null,
+    nivel_id: null,
+    perfil,
+    tipo: contenido.tipo,
+    orden: i + 1,
+    contenido,
+    imagen_url: null,
+    audio_url: null,
+    is_premium: false,
+    es_variante_ia: false,
+    estado_revision_ia: null,
+    variante_base_id: null,
+    created_at: new Date().toISOString(),
+  }));
+}
+
 export const ejercicios: Ejercicio[] = [
-  {
-    id: "ej-abc-1-ninos",
-    clase_id: "a1-s0-c1",
-    seccion_id: null,
-    nivel_id: null,
-    perfil: "ninos",
-    tipo: "opcion_multiple",
-    orden: 1,
-    contenido: {
-      tipo: "opcion_multiple",
-      pregunta: "¿Qué letra nunca se pronuncia en español?",
-      opciones: ["H", "Ñ", "J"],
-      respuesta_correcta: 0,
-    },
-    imagen_url: null,
-    audio_url: null,
-    is_premium: false,
-    es_variante_ia: false,
-    estado_revision_ia: null,
-    variante_base_id: null,
-    created_at: new Date().toISOString(),
-  },
-  {
-    id: "ej-abc-2-ninos",
-    clase_id: "a1-s0-c1",
-    seccion_id: null,
-    nivel_id: null,
-    perfil: "ninos",
-    tipo: "verdadero_falso",
-    orden: 2,
-    contenido: {
-      tipo: "verdadero_falso",
-      afirmacion: "La Ñ es una letra propia del español y no existe en el alfabeto inglés.",
-      es_verdadero: true,
-    },
-    imagen_url: null,
-    audio_url: null,
-    is_premium: false,
-    es_variante_ia: false,
-    estado_revision_ia: null,
-    variante_base_id: null,
-    created_at: new Date().toISOString(),
-  },
-  {
-    id: "ej-abc-3-ninos",
-    clase_id: "a1-s0-c1",
-    seccion_id: null,
-    nivel_id: null,
-    perfil: "ninos",
-    tipo: "completar_espacio",
-    orden: 3,
-    contenido: {
-      tipo: "completar_espacio",
-      texto: "La letra ___ suena como en la palabra 'niño'.",
-      respuestas: ["ñ"],
-    },
-    imagen_url: null,
-    audio_url: null,
-    is_premium: false,
-    es_variante_ia: false,
-    estado_revision_ia: null,
-    variante_base_id: null,
-    created_at: new Date().toISOString(),
-  },
-  {
-    id: "ej-abc-1-trabajo",
-    clase_id: "a1-s0-c1",
-    seccion_id: null,
-    nivel_id: null,
-    perfil: "trabajo_viajes",
-    tipo: "opcion_multiple",
-    orden: 1,
-    contenido: {
-      tipo: "opcion_multiple",
-      pregunta: "¿Qué letra nunca se pronuncia en español?",
-      opciones: ["H", "Ñ", "J"],
-      respuesta_correcta: 0,
-    },
-    imagen_url: null,
-    audio_url: null,
-    is_premium: false,
-    es_variante_ia: false,
-    estado_revision_ia: null,
-    variante_base_id: null,
-    created_at: new Date().toISOString(),
-  },
-  {
-    id: "ej-abc-2-trabajo",
-    clase_id: "a1-s0-c1",
-    seccion_id: null,
-    nivel_id: null,
-    perfil: "trabajo_viajes",
-    tipo: "verdadero_falso",
-    orden: 2,
-    contenido: {
-      tipo: "verdadero_falso",
-      afirmacion: "La Ñ es una letra propia del español y no existe en el alfabeto inglés.",
-      es_verdadero: true,
-    },
-    imagen_url: null,
-    audio_url: null,
-    is_premium: false,
-    es_variante_ia: false,
-    estado_revision_ia: null,
-    variante_base_id: null,
-    created_at: new Date().toISOString(),
-  },
-  {
-    id: "ej-abc-3-trabajo",
-    clase_id: "a1-s0-c1",
-    seccion_id: null,
-    nivel_id: null,
-    perfil: "trabajo_viajes",
-    tipo: "completar_espacio",
-    orden: 3,
-    contenido: {
-      tipo: "completar_espacio",
-      texto: "La letra ___ suena como en la palabra 'niño'.",
-      respuestas: ["ñ"],
-    },
-    imagen_url: null,
-    audio_url: null,
-    is_premium: false,
-    es_variante_ia: false,
-    estado_revision_ia: null,
-    variante_base_id: null,
-    created_at: new Date().toISOString(),
-  },
+  ...ejerciciosAbecedario("ninos"),
+  ...ejerciciosAbecedario("trabajo_viajes"),
   {
     id: "ej-1",
     clase_id: "a1-s1-c1",

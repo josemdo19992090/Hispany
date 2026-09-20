@@ -6,6 +6,7 @@ import type { EjercicioContenido } from "@/types/content";
 import Boton from "@/components/ui/Boton";
 import Texto from "@/components/ui/Texto";
 import { ui } from "@/lib/i18n/diccionario";
+import { textoConRespaldo } from "@/lib/i18n/contenido";
 import { useIdioma } from "@/lib/i18n/context";
 
 export default function VerdaderoFalso({
@@ -22,7 +23,9 @@ export default function VerdaderoFalso({
 
   return (
     <div>
-      <p className="mb-4 text-lg font-bold">{contenido.afirmacion}</p>
+      <p className="mb-4 text-lg font-bold">
+        {textoConRespaldo(contenido.afirmacion, contenido.afirmacion_ru, idioma)}
+      </p>
       <div className="flex gap-3">
         {[true, false].map((valor) => (
           <button

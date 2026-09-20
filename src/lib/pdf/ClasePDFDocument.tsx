@@ -1,5 +1,7 @@
-import { Document, Page, Text, StyleSheet } from "@react-pdf/renderer";
+import { Document, Page, Text, View, StyleSheet } from "@react-pdf/renderer";
 import type { ClaseVersion } from "@/types/content";
+import { VOCALES, CONSONANTES, type Letra } from "@/lib/abecedario";
+import type { Idioma } from "@/lib/i18n/idioma";
 
 const styles = StyleSheet.create({
   page: { padding: 40, fontSize: 11, fontFamily: "Helvetica", color: "#6B4423" },
@@ -29,7 +31,44 @@ const styles = StyleSheet.create({
     color: "#B98650",
     textAlign: "center",
   },
+  tablaGrupo: { fontSize: 10, fontWeight: 700, marginTop: 10, marginBottom: 4, color: "#6B4423" },
+  filaTabla: {
+    flexDirection: "row",
+    borderBottomWidth: 0.5,
+    borderBottomColor: "#D9B48F",
+    paddingVertical: 3,
+  },
+  celdaLetra: { width: 40, fontSize: 9, fontWeight: 700, color: "#1A7F58" },
+  celdaNombre: { width: 60, fontSize: 9 },
+  celdaSonido: { width: 55, fontSize: 9, fontFamily: "Helvetica" },
+  celdaEjemplo: { width: 70, fontSize: 9, fontStyle: "italic" },
+  celdaNota: { flex: 1, fontSize: 8, color: "#8B5E3C" },
 });
+
+// react-pdf no tiene <table>: se arma con Views en fila, mismos datos que
+// TablaAbecedario.tsx (src/lib/abecedario.ts) para que web y PDF no diverjan.
+function TablaAbecedarioPDF({ idioma }: { idioma: Idioma }) {
+  const conNotas = idioma === "ru";
+  const fila = (letra: Letra) => (
+    <View style={styles.filaTabla} key={letra.mayuscula}>
+      <Text style={styles.celdaLetra}>
+        {letra.mayuscula} {letra.minuscula}
+      </Text>
+      <Text style={styles.celdaNombre}>{letra.nombre}</Text>
+      <Text style={styles.celdaSonido}>{letra.sonido}</Text>
+      <Text style={styles.celdaEjemplo}>{letra.ejemplo}</Text>
+      {conNotas && <Text style={styles.celdaNota}>{letra.nota ?? "—"}</Text>}
+    </View>
+  );
+  return (
+    <>
+      <Text style={styles.tablaGrupo}>{idioma === "ru" ? "Гласные" : "Vocales"}</Text>
+      {VOCALES.map(fila)}
+      <Text style={styles.tablaGrupo}>{idioma === "ru" ? "Согласные" : "Consonantes"}</Text>
+      {CONSONANTES.map(fila)}
+    </>
+  );
+}
 
 // Quita el markdown básico (**negrita**, *cursiva*) que usamos en el contenido
 // de las clases, ya que react-pdf no interpreta markdown.
@@ -43,13 +82,20 @@ export default function ClasePDFDocument({
   claseTitulo,
   version,
   perfilEtiqueta,
+  idioma,
 }: {
   nivelNombre: string;
   seccionTitulo: string;
   claseTitulo: string;
   version: ClaseVersion;
   perfilEtiqueta: string;
+  idioma: Idioma;
 }) {
+  const texto = (bloque: "lectura" | "conversacion" | "gramatica" | "escritura") => {
+    const ru = version[`${bloque}_ru`];
+    return limpiarMarkdown(idioma === "ru" && ru ? ru : version[`${bloque}_md`]);
+  };
+
   return (
     <Document>
       <Page size="A4" style={styles.page}>
@@ -59,17 +105,18 @@ export default function ClasePDFDocument({
           {nivelNombre} · {seccionTitulo} · Perfil: {perfilEtiqueta}
         </Text>
 
-        <Text style={styles.seccionTitulo}>Lectura</Text>
-        <Text style={styles.parrafo}>{limpiarMarkdown(version.lectura_md)}</Text>
+        <Text style={styles.seccionTitulo}>{idioma === "ru" ? "Чтение" : "Lectura"}</Text>
+        <Text style={styles.parrafo}>{texto("lectura")}</Text>
 
-        <Text style={styles.seccionTitulo}>Conversación</Text>
-        <Text style={styles.parrafo}>{limpiarMarkdown(version.conversacion_md)}</Text>
+        <Text style={styles.seccionTitulo}>{idioma === "ru" ? "Разговор" : "Conversación"}</Text>
+        <Text style={styles.parrafo}>{texto("conversacion")}</Text>
 
-        <Text style={styles.seccionTitulo}>Gramática</Text>
-        <Text style={styles.parrafo}>{limpiarMarkdown(version.gramatica_md)}</Text>
+        <Text style={styles.seccionTitulo}>{idioma === "ru" ? "Грамматика" : "Gramática"}</Text>
+        <Text style={styles.parrafo}>{texto("gramatica")}</Text>
+        {claseTitulo === "El abecedario" && <TablaAbecedarioPDF idioma={idioma} />}
 
-        <Text style={styles.seccionTitulo}>Escritura</Text>
-        <Text style={styles.parrafo}>{limpiarMarkdown(version.escritura_md)}</Text>
+        <Text style={styles.seccionTitulo}>{idioma === "ru" ? "Письмо" : "Escritura"}</Text>
+        <Text style={styles.parrafo}>{texto("escritura")}</Text>
 
         <Text style={styles.pie} fixed>
           Generado dinámicamente por Hispany el {new Date().toLocaleDateString("es-VE")} — este

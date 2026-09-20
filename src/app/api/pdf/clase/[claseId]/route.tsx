@@ -4,6 +4,7 @@ import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { getUsuarioActual, getVersionClase } from "@/lib/data";
 import { calcularEstadoPremium } from "@/lib/premium";
 import ClasePDFDocument from "@/lib/pdf/ClasePDFDocument";
+import { obtenerIdioma } from "@/lib/i18n/server";
 import type { PerfilAlumno } from "@/types/content";
 
 export async function GET(
@@ -44,6 +45,7 @@ export async function GET(
   }
 
   const etiquetaPerfil = perfil === "ninos" ? "Niños" : "Trabajo / Viajes";
+  const idioma = await obtenerIdioma();
 
   const buffer = await renderToBuffer(
     <ClasePDFDocument
@@ -52,6 +54,7 @@ export async function GET(
       claseTitulo={clase.titulo}
       version={version}
       perfilEtiqueta={etiquetaPerfil}
+      idioma={idioma}
     />
   );
 
