@@ -53,11 +53,21 @@ export interface ClaseVersion {
   conversacion_md: string;
   gramatica_md: string;
   escritura_md: string;
-  // Nota opcional solo para rusohablantes: comparaciones de sonido con el
-  // ruso (ej. "esta letra no existe en tu idioma"). No es una traducción del
-  // contenido pedagógico —eso se enseña en español—, es una explicación
-  // adicional que solo tiene sentido en ruso. Se muestra solo si idioma="ru".
-  notas_ru: string | null;
+  // Espejos en ruso, uno por bloque, todos opcionales con respaldo al
+  // español (mismo patrón que nombre_ru/descripcion_ru en Nivel).
+  //
+  // La distinción no es "todo en español" vs "todo en ruso": es qué rol
+  // cumple el texto. Cuando el bloque EXPLICA algo (una regla de
+  // pronunciación, una instrucción de actividad), esa explicación debe
+  // decirse en ruso si la interfaz está en ruso — un principiante A1 no
+  // puede leer un párrafo largo en español todavía. Pero las palabras y
+  // frases en español que son el OBJETO de la explicación (ejemplos,
+  // vocabulario a aprender) se dejan tal cual en español dentro del texto
+  // en ruso: eso es lo que hay que aprender, no se traduce.
+  lectura_ru: string | null;
+  conversacion_ru: string | null;
+  gramatica_ru: string | null;
+  escritura_ru: string | null;
   imagen_url: string | null; // preparado, sin uso todavía
   audio_url: string | null; // preparado, sin uso todavía
 }

@@ -60,7 +60,6 @@ export const ui = {
   conversacion: { ru: "Разговор", es: "Conversación" },
   gramatica: { ru: "Грамматика", es: "Gramática" },
   escritura: { ru: "Письмо", es: "Escritura" },
-  notaPronunciacion: { ru: "Заметка о произношении", es: "Nota de pronunciación" },
   descargarPDF: { ru: "Скачать PDF с объяснениями", es: "Descargar PDF de explicaciones" },
   ejerciciosDeComprobacion: { ru: "Упражнения", es: "Ejercicios de comprobación" },
   sinContenidoPerfil: {

@@ -4,7 +4,6 @@ import { notFound } from "next/navigation";
 import {
   ArrowLeft,
   BookOpen,
-  Ear,
   FileDown,
   GraduationCap,
   Lock,
@@ -25,10 +24,12 @@ import { resolverPerfilActivo } from "@/lib/perfil";
 import ClaseExercisePlayer from "@/components/exercises/ClaseExercisePlayer";
 import ContenidoBloqueado from "@/components/ContenidoBloqueado";
 import TextoConFormato from "@/components/TextoConFormato";
+import TablaAbecedario from "@/components/TablaAbecedario";
 import SelectorPerfil from "@/components/SelectorPerfil";
 import ChiguiMascot from "@/components/ChiguiMascot";
 import Texto from "@/components/ui/Texto";
 import { ui, type ClaveUI } from "@/lib/i18n/diccionario";
+import { textoClase } from "@/lib/i18n/contenido";
 import { obtenerIdioma } from "@/lib/i18n/server";
 import type { Idioma } from "@/lib/i18n/idioma";
 
@@ -103,35 +104,29 @@ export default async function ClasePage({
           <Bloque
             icono={<BookOpen />}
             claveTitulo="lectura"
-            texto={version.lectura_md}
+            texto={textoClase(version, "lectura", idioma)}
             idioma={idioma}
           />
           <Bloque
             icono={<MessagesSquare />}
             claveTitulo="conversacion"
-            texto={version.conversacion_md}
+            texto={textoClase(version, "conversacion", idioma)}
             idioma={idioma}
           />
           <Bloque
             icono={<GraduationCap />}
             claveTitulo="gramatica"
-            texto={version.gramatica_md}
+            texto={textoClase(version, "gramatica", idioma)}
             idioma={idioma}
-          />
+          >
+            {clase.titulo === "El abecedario" && <TablaAbecedario idioma={idioma} />}
+          </Bloque>
           <Bloque
             icono={<PenLine />}
             claveTitulo="escritura"
-            texto={version.escritura_md}
+            texto={textoClase(version, "escritura", idioma)}
             idioma={idioma}
           />
-          {idioma === "ru" && version.notas_ru && (
-            <Bloque
-              icono={<Ear />}
-              claveTitulo="notaPronunciacion"
-              texto={version.notas_ru}
-              idioma={idioma}
-            />
-          )}
 
           {esPremium ? (
             <a
@@ -183,21 +178,24 @@ function Bloque({
   claveTitulo,
   texto,
   idioma,
+  children,
 }: {
   icono: ReactNode;
   claveTitulo: ClaveUI;
   texto: string;
   idioma: Idioma;
+  children?: ReactNode;
 }) {
   return (
     <div className="rounded-card bg-white p-5 shadow-soft">
-      <p className="mb-2 flex items-center gap-2 font-bold">
+      <p className={`flex items-center gap-2 font-bold ${texto || children ? "mb-2" : ""}`}>
         <span className="flex h-8 w-8 items-center justify-center rounded-full bg-chigui-cream text-brand-green [&>svg]:h-4 [&>svg]:w-4">
           {icono}
         </span>
         {ui[claveTitulo][idioma]}
       </p>
-      <TextoConFormato texto={texto} className="text-chigui-brown" />
+      {texto && <TextoConFormato texto={texto} className="text-chigui-brown" />}
+      {children}
     </div>
   );
 }

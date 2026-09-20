@@ -57,59 +57,21 @@ export const clases: Clase[] = [
   { id: "a2-s1-c4", seccion_id: "a2-s1", orden: 4, titulo: "Pedir la cuenta" },
 ];
 
-// Nota de pronunciación solo para rusohablantes: compara sonidos difíciles
-// del español con el ruso. Es igual para los dos perfiles porque el
-// abecedario no cambia entre niños y adultos — solo cambia el tono del resto
-// de la clase. Ver notas_ru en ClaseVersion (src/types/content.ts) para el
-// porqué de este campo separado del contenido en español.
-const NOTAS_RU_ABECEDARIO = `Сложные буквы и особенности испанского алфавита 🇪🇸
-Некоторые буквы работают не так, как в русском — вот на что обратить внимание:
-
-🔸 B и V — звучат ОДИНАКОВО (в отличие от русского, где б и в разные звуки)
-bueno и vaso — оба начинаются с мягкого звука «б», без сильного нажима губ
-
-🔸 C — два звука:
-перед a, o, u звучит как «к»: casa (ка-са), copa (ко-па)
-перед e, i — произношение зависит от страны: в Латинской Америке, Андалусии и на Канарах — «с» (cielo, cena); в остальной Испании — межзубное «с» (язык между зубами, похоже на английское th). Оба варианта правильные — это региональная норма (distinción в Испании, seseo в Латинской Америке)
-
-🔸 G — два звука в зависимости от следующей буквы:
-перед e, i звучит как «х» (как J): gente (хэн-тэ), girar (хи-рар)
-перед a, o, u звучит как русская «г»: gato (га-то), amigo (а-ми-го)
-
-🔸 GU — перед e, i буква U не произносится: guitarra (ги-тарра), guerra (гэ-рра)
-⚠️ Исключение: если над u стоят две точки (ü), звук возвращается — pingüino (пин-гуи-но)
-
-🔸 H — почти всегда немая буква, не произносится: hola (о-ла), hermano (эр-ма-но). Звучит только в некоторых заимствованных словах (напр. hámster)
-
-🔸 J — звучит как русская «х», но более резко и с придыханием: jamón (ха-мон), jugo (ху-го)
-
-🔸 LL — произношение сильно зависит от страны: в большинстве стран — как русская «й» (llamar, lluvia — это называется yeísmo, так говорит большинство испаноговорящих); в Аргентине и Уругвае — как «ж» или «ш» (llamar → жа-мар/ша-мар)
-
-🔸 Ñ — мягкая «нь», отдельная буква (не n + мягкий знак): año (а-ньо), niño (ни-ньо)
-
-🔸 QU — буква U не произносится, звучит просто как «к»: queso (кэ-со), aquí (а-ки)
-💡 Сочетание C + e/i никогда не даёт звук «к» в испанском
-
-🔸 Y — может быть гласной («и») или согласной (звук «й», как LL): y (и — союз «и»), yo (йо — «я»)
-
-🔸 Z — та же особенность, что у C перед e/i: «с» в Латинской Америке и Андалусии, межзубное «с» в остальной Испании: zapato
-
-💡 Совет: не пытайся запомнить всё сразу — эти правила закрепятся сами по мере практики, а звучание отличается от страны к стране`;
-
 export const claseVersiones: ClaseVersion[] = [
   {
     id: "a1-s0-c1-ninos",
     clase_id: "a1-s0-c1",
     perfil: "ninos",
-    lectura_md:
-      "¡Vamos a conocer las letras del español! El español tiene 27 letras y, casi siempre, cada una suena igual sin importar dónde esté en la palabra.\n\nHay una letra muy especial que no existe en otros idiomas: la **Ñ**. Tiene una rayita ondulada arriba (la *virgulilla*) y suena distinto a la N: *niño*, *año*, *Chigui es muy risueño*.\n\nOtra letra curiosa es la **H**: nunca se pronuncia. Es una letra silenciosa.",
+    lectura_md: "El español tiene 27 letras. Casi todas suenan igual siempre.",
+    lectura_ru: "В испанском 27 букв. Почти все звучат одинаково всегда.",
     conversacion_md:
-      "Con un compañero, digan su nombre deletreando letra por letra. Por ejemplo: CHIGUI se dice CHE-HACHE-I-GE-U-I. Túrnense para adivinar qué nombre deletreó el otro.",
-    gramatica_md:
-      "Las **vocales** (a, e, i, o, u) siempre suenan igual, cortas y claras — nunca se alargan como en inglés.\n\nLas **consonantes** casi siempre suenan como se espera, pero hay grupos con reglas fijas:\nca, que, qui, co, cu suenan como \"k\"\nza, ce, ci, zo, zu tienen un sonido propio (cambia según el país)\nga, gue, gui, go, gu suenan con la \"g\" fuerte; ge, gi suenan como una \"j\"\nja, je, ji, jo, ju siempre suenan fuerte, como una \"j\" con aire\n\nLa **H** nunca suena. La **Ñ** es una letra propia del español.",
-    escritura_md:
-      "Escribe tu nombre completo y, debajo, deletréalo letra por letra, como hiciste en el ejercicio de conversación.",
-    notas_ru: NOTAS_RU_ABECEDARIO,
+      "Deletrea tu nombre en voz alta con un compañero. Ejemplo: ANA = A-ENE-A.",
+    conversacion_ru:
+      "Продиктуй своё имя по буквам вслух с напарником. Пример: ANA = A-ENE-A.",
+    gramatica_md: "Mirá la tabla: cada letra con su nombre, su sonido y un ejemplo.",
+    gramatica_ru: "Смотри таблицу: каждая буква — с названием, звуком и примером.",
+    escritura_md: "Escribe tu nombre y deletréalo debajo, letra por letra.",
+    escritura_ru: "Напиши своё имя и продиктуй его ниже по буквам.",
     imagen_url: null,
     audio_url: null,
   },
@@ -117,14 +79,16 @@ export const claseVersiones: ClaseVersion[] = [
     id: "a1-s0-c1-trabajo",
     clase_id: "a1-s0-c1",
     perfil: "trabajo_viajes",
-    lectura_md:
-      "El español usa el alfabeto latino: 27 letras, de la A a la Z. Casi todas se pronuncian siempre igual — algo que no pasa en inglés, donde una misma letra suena distinto según la palabra.\n\nUna letra no tiene equivalente en otros idiomas: la **Ñ** (con la *virgulilla*, esa rayita ondulada arriba), como en *señor* o *compañía*. Otra particularidad: la **H** nunca se pronuncia.",
+    lectura_md: "El español usa el alfabeto latino: 27 letras que casi siempre suenan igual.",
+    lectura_ru: "В испанском используется латинский алфавит: 27 букв, которые почти всегда звучат одинаково.",
     conversacion_md:
-      'Practica deletreando en voz alta tu nombre, apellido y correo electrónico. "¿Cómo se escribe?" es una de las preguntas más comunes en el trabajo, sobre todo por teléfono.',
-    gramatica_md:
-      "Las **vocales** (a, e, i, o, u) siempre suenan igual, cortas y claras — a diferencia del inglés, no se alargan ni cambian de sonido.\n\nLas **consonantes** casi siempre coinciden con lo esperado, salvo estos grupos:\nca, que, qui, co, cu suenan como \"k\"\nza, ce, ci, zo, zu tienen un sonido propio (varía según el país)\nga, gue, gui, go, gu suenan con la \"g\" fuerte; ge, gi suenan como una \"j\"\nja, je, ji, jo, ju siempre suenan fuerte, como una \"j\" aspirada\n\nLa **H** nunca se pronuncia. La **Ñ** es exclusiva del español.",
-    escritura_md: "Escribe cómo deletrearías tu correo electrónico en español, letra por letra.",
-    notas_ru: NOTAS_RU_ABECEDARIO,
+      'Practica deletreando tu nombre y tu correo. En el trabajo es común escuchar: "¿Cómo se escribe?".',
+    conversacion_ru:
+      'Потренируйся диктовать по буквам своё имя и почту. На работе часто слышно: "¿Cómo se escribe?" (Как это пишется?).',
+    gramatica_md: "Mirá la tabla: cada letra con su nombre, su sonido y un ejemplo.",
+    gramatica_ru: "Смотри таблицу: каждая буква — с названием, звуком и примером.",
+    escritura_md: "Escribe tu correo electrónico y deletréalo, letra por letra.",
+    escritura_ru: "Напиши свой email и продиктуй его по буквам.",
     imagen_url: null,
     audio_url: null,
   },
@@ -133,10 +97,13 @@ export const claseVersiones: ClaseVersion[] = [
     clase_id: "a1-s1-c1",
     perfil: "ninos",
     lectura_md: "Chigui saluda a sus amigos del río: **¡Hola! ¿Cómo estás?**",
+    lectura_ru: null,
     conversacion_md: "Practica con un amigo: uno saluda, el otro responde.",
+    conversacion_ru: null,
     gramatica_md: "El verbo *estar* para expresar cómo nos sentimos.",
+    gramatica_ru: null,
     escritura_md: "Dibuja a Chigui y escribe cómo se siente hoy.",
-    notas_ru: null,
+    escritura_ru: null,
     imagen_url: null,
     audio_url: null,
   },
@@ -145,10 +112,13 @@ export const claseVersiones: ClaseVersion[] = [
     clase_id: "a1-s1-c1",
     perfil: "trabajo_viajes",
     lectura_md: "En una reunión de trabajo: **Hola, ¿cómo está usted?**",
+    lectura_ru: null,
     conversacion_md: "Simula un primer saludo formal en una oficina.",
+    conversacion_ru: null,
     gramatica_md: "Formal vs. informal: *tú* / *usted* con el verbo *estar*.",
+    gramatica_ru: null,
     escritura_md: "Escribe un correo breve de presentación.",
-    notas_ru: null,
+    escritura_ru: null,
     imagen_url: null,
     audio_url: null,
   },
