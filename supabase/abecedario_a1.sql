@@ -20,7 +20,7 @@ clase_abc as (
 )
 insert into clase_versiones
   (clase_id, perfil, lectura_md, conversacion_md, gramatica_md, escritura_md, notas_ru)
-select id, 'ninos',
+select id, 'ninos'::perfil_alumno,
   '¡Vamos a conocer las letras del español! El español tiene 27 letras y, casi siempre, cada una suena igual sin importar dónde esté en la palabra.
 
 Hay una letra muy especial que no existe en otros idiomas: la **Ñ**. Tiene una rayita ondulada arriba (la *virgulilla*) y suena distinto a la N: *niño*, *año*, *Chigui es muy risueño*.
@@ -72,7 +72,7 @@ bueno и vaso — оба начинаются с мягкого звука «б�
 💡 Совет: не пытайся запомнить всё сразу — эти правила закрепятся сами по мере практики, а звучание отличается от страны к стране$$
 from clase_abc
 union all
-select id, 'trabajo_viajes',
+select id, 'trabajo_viajes'::perfil_alumno,
   'El español usa el alfabeto latino: 27 letras, de la A a la Z. Casi todas se pronuncian siempre igual — algo que no pasa en inglés, donde una misma letra suena distinto según la palabra.
 
 Una letra no tiene equivalente en otros idiomas: la **Ñ** (con la *virgulilla*, esa rayita ondulada arriba), como en *señor* o *compañía*. Otra particularidad: la **H** nunca se pronuncia.',
