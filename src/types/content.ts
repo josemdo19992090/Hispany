@@ -53,6 +53,11 @@ export interface ClaseVersion {
   conversacion_md: string;
   gramatica_md: string;
   escritura_md: string;
+  // Nota opcional solo para rusohablantes: comparaciones de sonido con el
+  // ruso (ej. "esta letra no existe en tu idioma"). No es una traducción del
+  // contenido pedagógico —eso se enseña en español—, es una explicación
+  // adicional que solo tiene sentido en ruso. Se muestra solo si idioma="ru".
+  notas_ru: string | null;
   imagen_url: string | null; // preparado, sin uso todavía
   audio_url: string | null; // preparado, sin uso todavía
 }

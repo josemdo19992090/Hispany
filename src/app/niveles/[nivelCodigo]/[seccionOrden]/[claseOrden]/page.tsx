@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import {
   ArrowLeft,
   BookOpen,
+  Ear,
   FileDown,
   GraduationCap,
   Lock,
@@ -123,6 +124,14 @@ export default async function ClasePage({
             texto={version.escritura_md}
             idioma={idioma}
           />
+          {idioma === "ru" && version.notas_ru && (
+            <Bloque
+              icono={<Ear />}
+              claveTitulo="notaPronunciacion"
+              texto={version.notas_ru}
+              idioma={idioma}
+            />
+          )}
 
           {esPremium ? (
             <a
