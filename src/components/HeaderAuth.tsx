@@ -20,7 +20,7 @@ export default async function HeaderAuth() {
         href="/login"
         className="rounded-full bg-brand-green px-4 py-1.5 text-sm font-bold text-white"
       >
-        <Texto clave="iniciarSesion" />
+        <Texto clave="iniciar" />
       </Link>
     );
   }

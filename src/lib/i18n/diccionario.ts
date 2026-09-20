@@ -8,6 +8,9 @@
 
 export const ui = {
   // Header / sesión
+  // Versión corta para el botón del header: "Iniciar sesión" se corta en dos
+  // líneas en el pill del header en móvil.
+  iniciar: { ru: "Войти", es: "Iniciar" },
   iniciarSesion: { ru: "Войти", es: "Iniciar sesión" },
   crearCuenta: { ru: "Создать аккаунт", es: "Crear cuenta" },
   salir: { ru: "Выйти", es: "Salir" },
