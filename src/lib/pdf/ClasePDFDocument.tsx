@@ -1,10 +1,27 @@
-import { Document, Page, Text, View, StyleSheet } from "@react-pdf/renderer";
+import { Document, Page, Text, View, StyleSheet, Font } from "@react-pdf/renderer";
 import type { ClaseVersion } from "@/types/content";
 import { VOCALES, CONSONANTES, type Letra } from "@/lib/abecedario";
 import type { Idioma } from "@/lib/i18n/idioma";
+import { PT_SANS_REGULAR_BASE64, PT_SANS_BOLD_BASE64 } from "./fonts";
+
+// "Helvetica" (la fuente base de react-pdf) no tiene glifos cirílicos: el
+// contenido en ruso salía como texto corrupto. PT Sans cubre español y ruso
+// en el mismo archivo, así que se usa siempre, no solo cuando idioma="ru"
+// (una clase puede mezclar bloques en los dos idiomas).
+// react-pdf resuelve `src` con fetch(): un Buffer no cumple el tipo `string`
+// que pide (y fetch tampoco lo aceptaría), así que va como data URI en vez
+// de leer un archivo del disco — evita depender de que Vercel empaquete un
+// archivo binario referenciado solo por ruta.
+Font.register({
+  family: "PT Sans",
+  fonts: [
+    { src: `data:font/woff;base64,${PT_SANS_REGULAR_BASE64}`, fontWeight: 400 },
+    { src: `data:font/woff;base64,${PT_SANS_BOLD_BASE64}`, fontWeight: 700 },
+  ],
+});
 
 const styles = StyleSheet.create({
-  page: { padding: 40, fontSize: 11, fontFamily: "Helvetica", color: "#6B4423" },
+  page: { padding: 40, fontSize: 11, fontFamily: "PT Sans", color: "#6B4423" },
   marcaAgua: {
     position: "absolute",
     top: 20,
@@ -40,8 +57,8 @@ const styles = StyleSheet.create({
   },
   celdaLetra: { width: 40, fontSize: 9, fontWeight: 700, color: "#1A7F58" },
   celdaNombre: { width: 60, fontSize: 9 },
-  celdaSonido: { width: 55, fontSize: 9, fontFamily: "Helvetica" },
-  celdaEjemplo: { width: 70, fontSize: 9, fontStyle: "italic" },
+  celdaSonido: { width: 55, fontSize: 9 },
+  celdaEjemplo: { width: 70, fontSize: 9, color: "#8B5E3C" },
   celdaNota: { flex: 1, fontSize: 8, color: "#8B5E3C" },
 });
 

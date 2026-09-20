@@ -136,31 +136,24 @@ export const claseVersiones: ClaseVersion[] = [
 ];
 
 // 12 ejercicios cubriendo distintas letras y reglas (no solo H/Ñ), revisados
-// por un agente especialista en pedagogía + ruso + español. El abecedario no
-// cambia entre perfiles, así que la misma lista se usa para ninos y
-// trabajo_viajes. `emparejar` y `encontrar_error` (cuando texto es una frase
-// de práctica real) no llevan _ru: ver el comentario en EjercicioContenido
-// (src/types/content.ts) sobre cuándo corresponde el espejo en ruso.
+// dos veces por agentes especialistas: uno de pedagogía + ruso + español
+// (idioma), otro de lógica pedagógica (secuencia, precisión). Ajustes de la
+// segunda pasada: la pregunta de C ahora acota "en Latinoamérica" (igual que
+// la de Z, ya bien acotada) porque el sonido varía por región y antes solo
+// una de las dos preguntas lo aclaraba; el emparejar de sonidos usa notación
+// consistente (antes mezclaba símbolos fonéticos con la palabra "muda"); la
+// vieja pregunta de completar-espacio (G→gente→mismo sonido que J) pedía una
+// inferencia de dos pasos poco razonable para la primera clase, se reemplazó
+// por una de opción múltiple de un solo paso; y las dos de "encontrar error"
+// tenían una corrección ambigua (nombraban la palabra clickeada pero no el
+// sujeto real de la regla) — reescritas como oración completa.
+//
+// El abecedario no cambia entre perfiles, así que la misma lista se usa para
+// ninos y trabajo_viajes. `emparejar` y `encontrar_error` (cuando texto es
+// una frase de práctica real) no llevan _ru: ver el comentario en
+// EjercicioContenido (src/types/content.ts) sobre cuándo corresponde el
+// espejo en ruso.
 const EJERCICIOS_ABECEDARIO: EjercicioContenido[] = [
-  {
-    tipo: "opcion_multiple",
-    pregunta: "¿Cómo suena la C en la palabra 'cine'?",
-    pregunta_ru: "Как звучит буква C в слове 'cine'?",
-    opciones: ["/k/", "/s/", "/g/"],
-    respuesta_correcta: 1,
-  },
-  {
-    tipo: "verdadero_falso",
-    afirmacion: "En español, B y V suenan igual.",
-    afirmacion_ru: "В испанском B и V звучат одинаково.",
-    es_verdadero: true,
-  },
-  {
-    tipo: "completar_espacio",
-    texto: "La palabra 'gente' empieza con el mismo sonido que la letra ___.",
-    texto_ru: "Слово 'gente' начинается со звука, который совпадает со звуком буквы ___.",
-    respuestas: ["j"],
-  },
   {
     tipo: "emparejar",
     pares: [
@@ -172,11 +165,22 @@ const EJERCICIOS_ABECEDARIO: EjercicioContenido[] = [
     ],
   },
   {
-    tipo: "encontrar_error",
-    texto: "La H suena como una K fuerte.",
-    texto_ru: "Буква H звучит как сильная K.",
-    palabra_incorrecta: "K",
-    correccion: "muda (no suena)",
+    tipo: "verdadero_falso",
+    afirmacion: "En español, B y V suenan igual.",
+    afirmacion_ru: "В испанском B и V звучат одинаково.",
+    es_verdadero: true,
+  },
+  {
+    tipo: "verdadero_falso",
+    afirmacion: "La LL suena parecido a la 'y' en la mayoría de países hispanohablantes.",
+    afirmacion_ru: "Буква LL в большинстве испаноязычных стран звучит похоже на «й».",
+    es_verdadero: true,
+  },
+  {
+    tipo: "verdadero_falso",
+    afirmacion: "La Y puede sonar como vocal (en 'y') o como consonante (en 'yo').",
+    afirmacion_ru: "Буква Y может звучать как гласная (в 'y') или как согласная (в 'yo').",
+    es_verdadero: true,
   },
   {
     tipo: "opcion_multiple",
@@ -186,16 +190,11 @@ const EJERCICIOS_ABECEDARIO: EjercicioContenido[] = [
     respuesta_correcta: 1,
   },
   {
-    tipo: "verdadero_falso",
-    afirmacion: "La Y puede sonar como vocal (en 'y') o como consonante (en 'yo').",
-    afirmacion_ru: "Буква Y может звучать как гласная (в 'y') или как согласная (в 'yo').",
-    es_verdadero: true,
-  },
-  {
-    tipo: "completar_espacio",
-    texto: "La letra ___ no existe en el alfabeto inglés ni en el ruso, y aparece en la palabra 'niño'.",
-    texto_ru: "Буквы ___ нет ни в английском, ни в русском алфавите, она есть в слове 'niño'.",
-    respuestas: ["ñ"],
+    tipo: "opcion_multiple",
+    pregunta: "¿Cómo suena la C en la palabra 'cine' en Latinoamérica?",
+    pregunta_ru: "Как звучит буква C в слове 'cine' в Латинской Америке?",
+    opciones: ["/k/", "/s/", "/g/"],
+    respuesta_correcta: 1,
   },
   {
     tipo: "opcion_multiple",
@@ -205,28 +204,42 @@ const EJERCICIOS_ABECEDARIO: EjercicioContenido[] = [
     respuesta_correcta: 0,
   },
   {
+    tipo: "completar_espacio",
+    texto: "La letra ___ no existe en el alfabeto inglés ni en el ruso, y aparece en la palabra 'niño'.",
+    texto_ru: "Буквы ___ нет ни в английском, ни в русском алфавите, она есть в слове 'niño'.",
+    respuestas: ["ñ"],
+  },
+  {
     // palabra_incorrecta tiene que ser un token idéntico en los dos textos
-    // (acá, la letra B) para que siga siendo clickeable en la versión rusa.
+    // (acá, la letra K) para que siga siendo clickeable en la versión rusa.
+    tipo: "encontrar_error",
+    texto: "La H suena como una K fuerte.",
+    texto_ru: "Буква H звучит как сильная K.",
+    palabra_incorrecta: "K",
+    correccion: "La H no suena: es una letra muda. No suena como la K.",
+  },
+  {
     tipo: "encontrar_error",
     texto: "La V suena distinta a la B en español.",
     texto_ru: "Буква V звучит иначе, чем B в испанском.",
     palabra_incorrecta: "B",
-    correccion: "igual (V y B suenan igual)",
-  },
-  {
-    tipo: "verdadero_falso",
-    afirmacion: "La LL suena parecido a la 'y' en la mayoría de países hispanohablantes.",
-    afirmacion_ru: "Буква LL в большинстве испаноязычных стран звучит похоже на «й».",
-    es_verdadero: true,
+    correccion: "La V y la B suenan igual en español. No son distintas.",
   },
   {
     tipo: "emparejar",
     pares: [
       { izquierda: "/x/", derecha: "J" },
       { izquierda: "/b/", derecha: "V" },
-      { izquierda: "/ɲ/", derecha: "Ñ" },
-      { izquierda: "muda", derecha: "H" },
+      { izquierda: "/ny/", derecha: "Ñ" },
+      { izquierda: "/k/", derecha: "Q" },
     ],
+  },
+  {
+    tipo: "opcion_multiple",
+    pregunta: "¿Cómo suena la G en la palabra 'gente'?",
+    pregunta_ru: "Как звучит буква G в слове 'gente'?",
+    opciones: ["/g/", "/x/", "/k/"],
+    respuesta_correcta: 1,
   },
 ];
 
